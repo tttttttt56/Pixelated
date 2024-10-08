@@ -5,6 +5,6 @@ The app will only users to play retro arcade games in the app. It will also be a
 Group Information: 
 - Tyler Grogg, tbgrogg@wisc.edu, Github: tttttttt56
 - Kristen Anderson
-- Hunter Roll
+- Hunter Roll, hroll@wisc.edu, Github: H-Roll
 - Sumit
 
