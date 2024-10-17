@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Pixelated</string>
+    <string name="online_arcade">Enter Online Arcade</string>
+    <string name="physical_arcade">IRL Arcade</string>
+    <string name="galaga">Galaga</string>
+    <string name="pacman">Pacman</string>
+    <string name="centipede">Centipede</string>
+    <string name="ArcadeMap">Arcade Map</string>
+    <string name="scoreboard">Scoreboard</string>
+</resources>
