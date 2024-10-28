@@ -7,28 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arcadegamebackground" />
-
     <LinearLayout
         android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="272dp"
+        android:layout_gravity="center"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="242dp">
 
         <Button
             android:id="@+id/galaga"
@@ -63,7 +49,8 @@
         android:layout_height="50dp"
         android:orientation="horizontal"
         tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="665dp">
+        tools:layout_editor_absoluteY="665dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
             android:id="@+id/arcade_map"
@@ -84,6 +71,7 @@
             tools:layout_editor_absoluteY="426dp" />
 
     </LinearLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

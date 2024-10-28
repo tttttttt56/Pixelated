@@ -21,17 +21,35 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        /*val onlineArcButton = findViewById<Button>(R.id.Scoreboard);
-        onlineArcButton.setOnClickListener{
-            val intent = Intent(this,Scoreboard::class.java)
 
+        findViewById<Button>(R.id.galaga).setOnClickListener(){
+            val intent = Intent(this,GalagaActivity::class.java)
+            //Give input if needed
+            //intent.putExtra("EXTRA_MESSAGE",userInput)
+            //start activity
             startActivity(intent)
-        }*/
+        }
 
+        findViewById<Button>(R.id.pacman).setOnClickListener(){
+            val intent = Intent(this,PacmanActivity::class.java)
+            //Give input if needed
+            //intent.putExtra("EXTRA_MESSAGE",userInput)
+            //start activity
+            startActivity(intent)
+        }
+
+        findViewById<Button>(R.id.centipede).setOnClickListener(){
+            val intent = Intent(this,CentipedeActivity::class.java)
+            //Give input if needed
+            //intent.putExtra("EXTRA_MESSAGE",userInput)
+            //start activity
+            startActivity(intent)
+        }
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        //TODO: finish
+        //TODO: finish menu
         return super.onOptionsItemSelected(item)
     }
 
