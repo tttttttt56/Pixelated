@@ -45,6 +45,14 @@ class MainActivity : AppCompatActivity() {
             //start activity
             startActivity(intent)
         }
+
+        findViewById<Button>(R.id.arcade_map).setOnClickListener(){
+            val intent = Intent(this,ArcadeMap::class.java)
+            //Give input if needed
+            //intent.putExtra("EXTRA_MESSAGE",userInput)
+            //start activity
+            startActivity(intent)
+        }
     }
 
 
