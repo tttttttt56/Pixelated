@@ -17,7 +17,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    buildFeatures {
+        buildConfig = true // Enable the BuildConfig feature
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -25,7 +27,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "MAPS_API_KEY", "\"\${key.MAPS_API_KEY}\"")
         }
+        debug {
+            buildConfigField("String", "MAPS_API_KEY", "\"\${key.MAPS_API_KEY}\"") // Add for debug as well
+        }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

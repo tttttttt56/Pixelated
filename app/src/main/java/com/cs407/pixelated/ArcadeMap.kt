@@ -8,19 +8,17 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.android.volley.BuildConfig
-import com.google.android.gms.common.api.Response
+import com.cs407.pixelated.BuildConfig.MAPS_API_KEY
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.places.Places
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -52,6 +50,8 @@ data class Location(val lat: Double, val lng: Double)
 
 class ArcadeMap : AppCompatActivity() {
     private lateinit var mMap: GoogleMap
+    private lateinit var currentLatLng: LatLng
+    private var currentPolyline: Polyline? = null
     private lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
 
     private val placesApiService by lazy {
@@ -75,6 +75,10 @@ class ArcadeMap : AppCompatActivity() {
             mMap = googleMap
 
             checkLocationPermission()
+            mMap.setOnMarkerClickListener { marker ->
+                drawLineToMarker(marker)
+                true // Return true to indicate that we have consumed the event
+            }
         }
 
     }
@@ -99,7 +103,7 @@ class ArcadeMap : AppCompatActivity() {
 
             mFusedLocationProviderClient.getLastLocation().addOnCompleteListener { task ->
                 val currentLocation = task.result
-                val currentLatLng = LatLng(
+                currentLatLng = LatLng(
                     currentLocation.latitude,
                     currentLocation.longitude
                 )
@@ -107,7 +111,6 @@ class ArcadeMap : AppCompatActivity() {
                 setLocationMarker(mMap, currentLatLng, "Current Location")
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,10f))
 
-                Log.d("D","Searching for arcades now...")
                 searchNearbyArcades(currentLatLng)
             }
         }
@@ -121,15 +124,17 @@ class ArcadeMap : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val response = placesApiService.getNearbyArcades(
-                    locationString, radius,keyword,"YOUR_API_KEY")
+                    locationString,
+                    radius,
+                    keyword,
+                    "${MAPS_API_KEY}")
 
-                if(response.isEmpty){
+                if(response.results.isEmpty()){
                     showDialog()
                 } else {
                     response.results.forEach { place ->
                         val placeLatLng = LatLng(place.geometry.location.lat, place.geometry.location.lng)
                         mMap.addMarker(MarkerOptions().position(placeLatLng).title(place.name))
-                        //FIXME: for testing -> Log.d("locationList","${place.geometry.location.lat}")
                     }
                 }
 
@@ -145,5 +150,17 @@ class ArcadeMap : AppCompatActivity() {
             .setPositiveButton("OK"){dialog, _ ->dialog.dismiss()}
             .create()
             .show()
+    }
+
+    private fun drawLineToMarker(marker: Marker) {
+        currentPolyline?.remove()
+
+        currentPolyline = mMap.addPolyline(
+            PolylineOptions()
+                .add(
+                    marker.position,
+                    currentLatLng
+                )
+        )
     }
 }
