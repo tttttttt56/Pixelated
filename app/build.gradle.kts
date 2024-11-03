@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -16,7 +17,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    buildFeatures {
+        buildConfig = true // Enable the BuildConfig feature
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -24,7 +27,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "MAPS_API_KEY", "\"\${key.MAPS_API_KEY}\"")
         }
+        debug {
+            buildConfigField("String", "MAPS_API_KEY", "\"\${key.MAPS_API_KEY}\"") // Add for debug as well
+        }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -42,7 +50,22 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.places)
+    implementation(libs.places.ktx)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+}
+secrets {
+    propertiesFileName = "secrets.properties"
+
+    defaultPropertiesFileName = "local.defaults.properties"
+
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 }
