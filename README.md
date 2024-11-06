@@ -6,7 +6,7 @@ Link to Wireframe: https://www.figma.com/design/mXbDjz6U7NgayBRcsWsKIN/Wireframe
 
 Group Information: 
 - Tyler Grogg, tbgrogg@wisc.edu, Github: tttttttt56
-- Kristen Anderson
+- Kristen Anderson, kmanderson43@wisc.edu, GitHub: kmanderson43
 - Hunter Roll, hroll@wisc.edu, Github: H-Roll
 - Sumit
 

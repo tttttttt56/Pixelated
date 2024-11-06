@@ -3,6 +3,7 @@ package com.cs407.pixelated
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -81,6 +82,21 @@ class ArcadeMap : AppCompatActivity() {
             }
         }
 
+        //add bar at bottom (top) to exit map
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.title = "Arcade Map"
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                // Handle the back button press, typically finishing the activity
+                onBackPressedDispatcher.onBackPressed()  // This finishes the current activity and navigates back
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     fun setLocationMarker(googleMap: GoogleMap,
