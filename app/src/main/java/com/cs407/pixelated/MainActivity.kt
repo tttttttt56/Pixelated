@@ -2,9 +2,13 @@ package com.cs407.pixelated
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +31,12 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         toolbar.title = "Pixelated"
 
-        findViewById<Button>(R.id.galaga).setOnClickListener(){
+        val profileButton = findViewById<ImageButton>(R.id.profile_button)
+        profileButton.setOnClickListener { view ->
+            showProfileMenu(view)
+        }
+
+        findViewById<ImageButton>(R.id.galaga).setOnClickListener(){
             val intent = Intent(this,GalagaActivity::class.java)
             //Give input if needed
             //intent.putExtra("EXTRA_MESSAGE",userInput)
@@ -35,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        findViewById<Button>(R.id.pacman).setOnClickListener(){
+        findViewById<ImageButton>(R.id.pacman).setOnClickListener(){
             val intent = Intent(this,PacmanActivity::class.java)
             //Give input if needed
             //intent.putExtra("EXTRA_MESSAGE",userInput)
@@ -43,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        findViewById<Button>(R.id.centipede).setOnClickListener(){
+        findViewById<ImageButton>(R.id.centipede).setOnClickListener(){
             val intent = Intent(this,CentipedeActivity::class.java)
             //Give input if needed
             //intent.putExtra("EXTRA_MESSAGE",userInput)
@@ -60,14 +69,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // popup menu anchored to the profile button
+    private fun showProfileMenu(view: View) {
+        val popup = PopupMenu(this, view)
+        popup.menuInflater.inflate(R.menu.top_menu, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.item1 -> {
+                    Log.d("Menu", "Profile item clicked")
+                    // handle the profile item action here
+                    true
+                }
+                else -> false
+            }
+        }
+        popup.show()
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        //TODO: finish menu
-        return super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.item1 -> {
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        //TODO
         menuInflater.inflate(R.menu.top_menu,menu);
         return super.onCreateOptionsMenu(menu)
     }
