@@ -14,34 +14,41 @@
         android:layout_gravity="center"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="242dp">
-
-        <Button
-            android:id="@+id/galaga"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/galaga"
-            tools:layout_editor_absoluteX="160dp"
-            tools:layout_editor_absoluteY="200dp" />
-
-        <Button
-            android:id="@+id/pacman"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/pacman"
-            tools:layout_editor_absoluteX="160dp"
-            tools:layout_editor_absoluteY="316dp" />
+        tools:layout_editor_absoluteY="242dp"
+        android:background="@drawable/app_background">
 
         <Button
             android:id="@+id/centipede"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_background"
             android:text="@string/centipede"
-            tools:layout_editor_absoluteX="166dp"
-            tools:layout_editor_absoluteY="426dp" />
+            android:textSize="15sp"
+            android:layout_marginStart="-135dp"
+            android:layout_marginTop="260dp"/>
+
+        <Button
+            android:id="@+id/galaga"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_background"
+            android:text="@string/galaga"
+            android:textSize="15sp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="-105dp"/>
+
+        <Button
+            android:id="@+id/pacman"
+            android:layout_width="105dp"
+            android:layout_height="105dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_background"
+            android:text="@string/pacman"
+            android:textSize="15sp"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="-105dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -59,7 +66,9 @@
             android:layout_weight="1"
             android:text="@string/ArcadeMap"
             tools:layout_editor_absoluteX="166dp"
-            tools:layout_editor_absoluteY="426dp" />
+            tools:layout_editor_absoluteY="426dp"
+            android:backgroundTint="@color/brown"
+            android:textColor="@color/cream"/>
 
         <Button
             android:id="@+id/scoreboard"
@@ -68,7 +77,9 @@
             android:layout_weight="1"
             android:text="@string/scoreboard"
             tools:layout_editor_absoluteX="166dp"
-            tools:layout_editor_absoluteY="426dp" />
+            tools:layout_editor_absoluteY="426dp"
+            android:backgroundTint="@color/brown"
+            android:textColor="@color/cream"/>
 
     </LinearLayout>
 
