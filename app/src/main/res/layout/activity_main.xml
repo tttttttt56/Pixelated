@@ -7,79 +7,110 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/brown"
+        android:elevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextAppearance="@style/CustomToolbarTitle"
+        app:titleTextColor="@android:color/white">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="16dp">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:textAlignment="center"
+                android:textColor="@color/cream"
+                android:textSize="35sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.Toolbar>
+
     <LinearLayout
         android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:background="@drawable/app_background"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="242dp"
-        android:background="@drawable/app_background">
+        tools:layout_editor_absoluteY="242dp">
 
         <Button
             android:id="@+id/centipede"
             android:layout_width="105dp"
             android:layout_height="105dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginStart="-135dp"
+            android:layout_marginTop="260dp"
             android:background="@drawable/button_background"
             android:text="@string/centipede"
-            android:textSize="15sp"
-            android:layout_marginStart="-135dp"
-            android:layout_marginTop="260dp"/>
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/galaga"
             android:layout_width="105dp"
             android:layout_height="105dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="-105dp"
             android:background="@drawable/button_background"
             android:text="@string/galaga"
-            android:textSize="15sp"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="-105dp"/>
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/pacman"
             android:layout_width="105dp"
             android:layout_height="105dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="-105dp"
             android:background="@drawable/button_background"
             android:text="@string/pacman"
-            android:textSize="15sp"
-            android:layout_marginStart="130dp"
-            android:layout_marginTop="-105dp"/>
+            android:textSize="15sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="665dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+        tools:layout_editor_absoluteY="665dp">
 
         <Button
             android:id="@+id/arcade_map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/ArcadeMap"
-            tools:layout_editor_absoluteX="166dp"
-            tools:layout_editor_absoluteY="426dp"
             android:backgroundTint="@color/brown"
-            android:textColor="@color/cream"/>
+            android:text="@string/ArcadeMap"
+            android:textColor="@color/cream"
+            tools:layout_editor_absoluteX="166dp"
+            tools:layout_editor_absoluteY="426dp" />
 
         <Button
             android:id="@+id/scoreboard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/scoreboard"
-            tools:layout_editor_absoluteX="166dp"
-            tools:layout_editor_absoluteY="426dp"
             android:backgroundTint="@color/brown"
-            android:textColor="@color/cream"/>
+            android:text="@string/scoreboard"
+            android:textColor="@color/cream"
+            tools:layout_editor_absoluteX="166dp"
+            tools:layout_editor_absoluteY="426dp" />
 
     </LinearLayout>
 
