@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arcadegamebackground" />
+        app:srcCompat="@drawable/galagabackground" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -46,6 +46,10 @@
             android:text="1. \n2."
             android:textColor="@color/white" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
         <TextView
             android:id="@+id/pacman_highscore"
             android:layout_width="wrap_content"
@@ -63,6 +67,10 @@
             android:text="1. \n2."
             android:textColor="@color/white" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
         <TextView
             android:id="@+id/centipede_highscore"
             android:layout_width="wrap_content"
@@ -79,6 +87,8 @@
             android:layout_gravity="center_horizontal"
             android:text="1. \n2."
             android:textColor="@color/white" />
+
+
     </LinearLayout>
 
 
