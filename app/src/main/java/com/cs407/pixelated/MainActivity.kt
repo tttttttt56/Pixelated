@@ -67,6 +67,14 @@ class MainActivity : AppCompatActivity() {
             //start activity
             startActivity(intent)
         }
+
+        findViewById<Button>(R.id.scoreboard).setOnClickListener(){
+            val intent = Intent(this,Scoreboard::class.java)
+            //Give input if needed
+            //intent.putExtra("EXTRA_MESSAGE",userInput)
+            //start activity
+            startActivity(intent)
+        }
     }
 
     // popup menu anchored to the profile button
