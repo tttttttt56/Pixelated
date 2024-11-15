@@ -14,6 +14,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +77,7 @@ class MainActivity : AppCompatActivity() {
             //start activity
             startActivity(intent)
         }
+
     }
 
     // popup menu anchored to the profile button
@@ -83,9 +86,17 @@ class MainActivity : AppCompatActivity() {
         popup.menuInflater.inflate(R.menu.top_menu, popup.menu)
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.item1 -> {
+                R.id.profile -> {
                     Log.d("Menu", "Profile item clicked")
                     // handle the profile item action here
+                    true
+                }
+                R.id.logout -> {
+                    Log.d("Menu", "Logout item clicked")
+                    val intent = Intent(this,LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
                     true
                 }
                 else -> false
@@ -94,10 +105,12 @@ class MainActivity : AppCompatActivity() {
         popup.show()
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.item1 -> {
+            R.id.profile -> {
+                return true
+            }
+            R.id.logout -> {
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
