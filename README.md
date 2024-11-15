@@ -8,5 +8,5 @@ Group Information:
 - Tyler Grogg, tbgrogg@wisc.edu, Github: tttttttt56
 - Kristen Anderson, kmanderson43@wisc.edu, GitHub: kmanderson43
 - Hunter Roll, hroll@wisc.edu, Github: H-Roll
-- Sumit
+- Sumit, singha2@wisc.edu, Github: Sumit-1107
 
