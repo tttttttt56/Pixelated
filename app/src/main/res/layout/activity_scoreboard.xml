@@ -14,15 +14,17 @@
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/galagabackground" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="244dp"
+        android:layout_marginTop="80dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -34,16 +36,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Galaga High Scores: "
+            android:layout_marginEnd="70dp"
+            android:text="@string/galaga_highscore"
             android:textColor="@color/white"
-            android:textSize="25dp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/galaga_scores"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="1. \n2."
+            android:layout_marginTop="-28dp"
+            android:layout_marginEnd="-50dp"
+            android:text="1,000,000"
+            android:textSize="20sp"
             android:textColor="@color/white" />
 
         <Space
@@ -55,16 +61,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Pacman High Scores: "
+            android:layout_marginEnd="60dp"
+            android:text="@string/pacman_highscore"
             android:textColor="@color/white"
-            android:textSize="25dp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/pacman_scores"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="1. \n2."
+            android:layout_marginTop="-28dp"
+            android:layout_marginEnd="-50dp"
+            android:text="1,000,000"
+            android:textSize="20sp"
             android:textColor="@color/white" />
 
         <Space
@@ -76,20 +86,41 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Centipede High Scores: "
+            android:layout_marginEnd="56dp"
+            android:text="@string/centipede_highscore"
             android:textColor="@color/white"
-            android:textSize="25dp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/centipede_scores"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="1. \n2."
+            android:layout_marginTop="-28dp"
+            android:layout_marginEnd="-50dp"
+            android:text="1,000,000"
+            android:textSize="20sp"
             android:textColor="@color/white" />
-
-
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/highscore_title"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="101dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
