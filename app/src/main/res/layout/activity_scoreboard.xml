@@ -216,24 +216,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/highScoresCard" />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <!-- Most Recent Scores Section -->
     <androidx.cardview.widget.CardView
         android:id="@+id/recentScoresCard"
@@ -411,8 +393,5 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
