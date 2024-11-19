@@ -15,4 +15,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="highScore">"High Score: "</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Logout</string>
+    <string name="highscore_title">High Scores</string>
+    <string name="galaga_highscore">Galaga:</string>
+    <string name="pacman_highscore">Pac-Man:</string>
+    <string name="centipede_highscore">Centipede:</string>
 </resources>
