@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import java.security.MessageDigest
@@ -36,14 +37,17 @@ class LoginActivity(
         loginButton = findViewById(R.id.loginButton)
         errorTextView = findViewById(R.id.errorTextView)
 
+        // set action bar title
+        supportActionBar?.title = "User Information"
+
         userViewModel = if (injectedUserViewModel != null) {
             injectedUserViewModel
         } else {
-            // TODO - Use ViewModelProvider to init UserViewModel
+            // use ViewModelProvider to init UserViewModel
             ViewModelProvider(this).get(UserViewModel::class.java)
         }
 
-        // TODO - Get shared preferences from using R.string.userPasswdKV as the name
+        // get shared preferences from using R.string.userPasswdKV as the name
         userPasswdKV =
             this.getSharedPreferences(getString(R.string.userPasswdKV), Context.MODE_PRIVATE)!!
 
@@ -58,14 +62,14 @@ class LoginActivity(
         // Set the login button click action
         loginButton.setOnClickListener {
 
-            // TODO: Get the entered username and password from EditText fields
+            // get the entered username and password from EditText fields
             val currUsername = usernameEditText.text.toString()
             val currPassword = passwordEditText.text.toString()
 
-            // TODO: Set the logged-in user in the ViewModel (store user info) (placeholder)
+            // set the logged-in user in the ViewModel (store user info) (placeholder)
             userViewModel.setUser(UserState(0, currUsername, currPassword))
 
-            // TODO: Navigate to main activity after successful login
+            // navigate to main activity after successful login
             val loginSuccessful = getUserPasswd(currUsername, currPassword)
             if (loginSuccessful) {
                 try {
@@ -77,7 +81,7 @@ class LoginActivity(
                 } catch (e: Exception) {
                     Log.e("CoroutineError", "Exception occurred: ${e.message}", e)
                 }
-                // TODO: Show an error message if either username or password is empty
+                // show an error message if either username or password is empty
             } else if (currUsername.isBlank() || currPassword.isBlank()) {
                 errorTextView.visibility = View.VISIBLE
             } else {
@@ -99,28 +103,28 @@ class LoginActivity(
         name: String,
         passwdPlain: String
     ): Boolean {
-        // TODO: Hash the plain password using a secure hashing function
+        // hash the plain password using a secure hashing function
         val password = hash(passwdPlain)
-        // TODO: Check if the user exists in SharedPreferences (using the username as the key)
+        // check if the user exists in SharedPreferences (using the username as the key)
         if (userPasswdKV.contains(name)) {
-            // TODO: Retrieve the stored password from SharedPreferences
+            // retrieve the stored password from SharedPreferences
             val storedPasswd = userPasswdKV.getString(name, null)
-            // TODO: Compare the hashed password with the stored one and return false if they don't match
+            // compare the hashed password with the stored one and return false if they don't match
             if (password != storedPasswd) {
                 return false
             }
         } else {
-            // TODO: If the user doesn't exist in SharedPreferences, create a new user
+            // if the user doesn't exist in SharedPreferences, create a new user
             val editor = userPasswdKV.edit()
             editor?.putString(name, password)
             editor?.apply()
         }
-        // TODO: Store the hashed password in SharedPreferences for future logins
+        // store the hashed password in SharedPreferences for future logins
         val editor = userPasswdKV.edit()
         editor?.putString(name, password)
         editor?.apply()
 
-        // TODO: Return true if the user login is successful or the user was newly created
+        // return true if the user login is successful or the user was newly created
         return true
     }
 
