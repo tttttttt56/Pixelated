@@ -87,6 +87,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.profile -> {
                     Log.d("Menu", "Profile item clicked")
                     // handle the profile item action here
+                    val intent = Intent(this,ProfileActivity::class.java)
+                    //Give input if needed
+                    //intent.putExtra("EXTRA_MESSAGE",userInput)
+                    //start activity
+                    startActivity(intent)
                     true
                 }
                 R.id.logout -> {

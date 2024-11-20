@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profileActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/profile_blue"
+        android:layout_width="64dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="9dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/profile_blue" />
+
+    <TextView
+        android:id="@+id/usernameInProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/username_text"
+        android:textSize="22sp"
+        app:layout_constraintStart_toEndOf="@id/profile_blue"
+        app:layout_constraintTop_toTopOf="@id/profile_blue"
+        tools:layout_editor_absoluteX="74dp"
+        tools:layout_editor_absoluteY="12dp" />
+
+    <TextView
+        android:id="@+id/levelInProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/level"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="@id/usernameInProfile"
+        app:layout_constraintTop_toBottomOf="@id/usernameInProfile"
+        tools:layout_editor_absoluteX="74dp"
+        tools:layout_editor_absoluteY="12dp" />
+
+    <ImageView
+        android:id="@+id/personalImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="415dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_blue"
+        app:srcCompat="@drawable/login_text_background" />
+
+    <TextView
+        android:id="@+id/insertPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="112dp"
+        android:text="@string/insert_photo"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="@id/usernameInProfile"
+        app:layout_constraintTop_toBottomOf="@id/usernameInProfile" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/insertPhoto"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteX="101dp">
+
+        <ImageButton
+            android:id="@+id/camera_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_photo_camera_24"/>
+
+        <ImageButton
+            android:id="@+id/image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_image_search_24"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/favoriteGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/favorite_game"
+        android:textSize="22sp"
+        app:layout_constraintTop_toBottomOf="@id/personalImage"
+        app:layout_constraintStart_toStartOf="@id/profile_blue" />
+
+    <TextView
+        android:id="@+id/favoriteArcade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="@string/favorite_arcade"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="@id/profile_blue"
+        app:layout_constraintTop_toBottomOf="@id/personalImage" />
+
+    <TextView
+        android:id="@+id/achievements"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:text="@string/achievements"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="@id/profile_blue"
+        app:layout_constraintTop_toBottomOf="@id/personalImage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

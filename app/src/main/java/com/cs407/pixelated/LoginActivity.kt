@@ -10,10 +10,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import java.security.MessageDigest
+
 
 class LoginActivity(
     private val injectedUserViewModel: UserViewModel? = null // For testing only
@@ -58,6 +59,13 @@ class LoginActivity(
         passwordEditText.doAfterTextChanged {
             errorTextView.visibility = View.GONE
         }
+
+        // welcome text's shadow
+        val shadowColor = ContextCompat.getColor(this, R.color.light_blue)
+        val welcomeText = findViewById<TextView>(R.id.welcomeText)
+        welcomeText.setShadowLayer(8f,6f,6f,shadowColor)
+        val pixelatedText = findViewById<TextView>(R.id.pixelatedText)
+        pixelatedText.setShadowLayer(8f,6f,6f,shadowColor)
 
         // Set the login button click action
         loginButton.setOnClickListener {

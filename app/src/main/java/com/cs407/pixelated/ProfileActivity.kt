@@ -1,0 +1,62 @@
+package com.cs407.pixelated
+
+import android.content.Context
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.view.MenuItem
+import android.widget.EditText
+import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+
+class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) : AppCompatActivity() {
+
+    private lateinit var userViewModel: UserViewModel
+    private lateinit var userPasswdKV: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_profile)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.profileActivity)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        userViewModel = if (injectedUserViewModel != null) {
+            injectedUserViewModel
+        } else {
+            // use ViewModelProvider to init UserViewModel
+            ViewModelProvider(this).get(UserViewModel::class.java)
+        }
+
+        // get shared preferences from using R.string.userPasswdKV as the name
+        userPasswdKV =
+            this.getSharedPreferences(getString(R.string.userPasswdKV), Context.MODE_PRIVATE)!!
+
+        // add bar at bottom (top) to exit game
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.title = "Profile"
+
+        // getting username
+        val userState = userViewModel.userState.value
+        val usernameTextView = findViewById<TextView>(R.id.usernameInProfile)
+        usernameTextView.text = getString(R.string.username_text, userState.name)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                // handle the back button press
+                onBackPressedDispatcher.onBackPressed()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+}
