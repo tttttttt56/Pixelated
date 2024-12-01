@@ -129,7 +129,7 @@ class LoginActivity(
             if (password != storedPasswd) {
                 return false
             }
-            // TODO else, update userid in user model, check lab 5
+            // TODO else, update userid in user model, check 5th lab
         } else {
             // if the user doesn't exist in SharedPreferences, create a new user
             val editor = userPasswdKV.edit()
