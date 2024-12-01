@@ -13,6 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.security.MessageDigest
 
 
@@ -28,6 +32,7 @@ class LoginActivity(
     private lateinit var userViewModel: UserViewModel
 
     private lateinit var userPasswdKV: SharedPreferences
+    private lateinit var appDB: PixelDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +56,7 @@ class LoginActivity(
         // get shared preferences from using R.string.userPasswdKV as the name
         userPasswdKV =
             this.getSharedPreferences(getString(R.string.userPasswdKV), Context.MODE_PRIVATE)!!
+        appDB = PixelDatabase.getDatabase(this)
 
         usernameEditText.doAfterTextChanged {
             errorTextView.visibility = View.GONE
@@ -70,6 +76,7 @@ class LoginActivity(
         // Set the login button click action
         loginButton.setOnClickListener {
 
+            lifecycleScope.launch {
             // get the entered username and password from EditText fields
             val currUsername = usernameEditText.text.toString()
             val currPassword = passwordEditText.text.toString()
@@ -81,7 +88,7 @@ class LoginActivity(
             val loginSuccessful = getUserPasswd(currUsername, currPassword)
             if (loginSuccessful) {
                 try {
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     //Give input if needed
                     //intent.putExtra("EXTRA_MESSAGE",userInput)
                     //start activity
@@ -95,6 +102,7 @@ class LoginActivity(
             } else {
                 errorTextView.visibility = View.VISIBLE
             }
+                }
         }
 
         // add text change listeners to hide error message when user types
@@ -107,7 +115,7 @@ class LoginActivity(
         }
     }
 
-    private fun getUserPasswd(
+    private suspend fun getUserPasswd(
         name: String,
         passwdPlain: String
     ): Boolean {
@@ -121,11 +129,18 @@ class LoginActivity(
             if (password != storedPasswd) {
                 return false
             }
+            // TODO else, update userid in user model, check lab 5
         } else {
             // if the user doesn't exist in SharedPreferences, create a new user
             val editor = userPasswdKV.edit()
             editor?.putString(name, password)
             editor?.apply()
+            // insert the new user into the Room database (implement this in your User DAO)
+            val currUser = User(0, name)
+            appDB.userDao().insert(currUser)
+            val updateUserIdInUserViewModel = appDB.userDao().getByName(name).userId
+            userViewModel.setUser(UserState(updateUserIdInUserViewModel, name, passwdPlain))
+
         }
         // store the hashed password in SharedPreferences for future logins
         val editor = userPasswdKV.edit()
