@@ -84,7 +84,7 @@ class LoginActivity(
             // set the logged-in user in the ViewModel (store user info) (placeholder)
             userViewModel.setUser(UserState(0, currUsername, currPassword))
 
-            // navigate to main activity after successful login
+            // navigate to main activity after successful login.
             val loginSuccessful = getUserPasswd(currUsername, currPassword)
             if (loginSuccessful) {
                 try {
