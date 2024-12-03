@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
@@ -77,10 +78,22 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
     private val paint: Paint = Paint()
     private var mazeBitmap: Bitmap
 
+    // Variables to keep track of PacMan Animation
+    private lateinit var pacmanOpen: Bitmap
+    private lateinit var pacmanClosed: Bitmap
+    private var mouthOpen = true       // Track mouth state for animation
+    private var frameCounter = 0       // Frame counter for animation timing
+
     init {
         // Load the maze image (ensure it's in the drawable folder)
+        pacmanOpen = BitmapFactory.decodeResource(context.resources, R.drawable.pacman_open)
+        pacmanClosed = BitmapFactory.decodeResource(context.resources, R.drawable.pacman_closed)
         mazeBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.maze)
         mazeBitmap = Bitmap.createScaledBitmap(mazeBitmap, 1089, 1188, true)
+
+        // Resize Pac-Man
+        pacmanOpen = Bitmap.createScaledBitmap(pacmanOpen, 70, 70, true)
+        pacmanClosed = Bitmap.createScaledBitmap(pacmanClosed, 70, 70, true)
     }
 
     private val mazeMap = arrayOf(
@@ -165,6 +178,23 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             val canvas = surfaceHolder.lockCanvas()
             update()  // Update game state (this includes moving Pac-Man)
             draw(canvas)
+            // Animate Pac-Man’s mouth every few frames
+            frameCounter++
+            if (frameCounter % 20 == 0) { // Adjust to control animation speed
+                mouthOpen = !mouthOpen
+            }
+            // Draw Pac-Man with the current frame
+
+            // Calculate offsets to center the image at (pacMan.x, pacMan.y)
+            val pacManCenterX = pacMan.x - pacmanOpen.width / 2
+            val pacManCenterY = pacMan.y - pacmanOpen.height / 2
+            if (mouthOpen) {
+                canvas.drawBitmap(pacmanOpen, pacManCenterX, pacManCenterY, paint)
+            } else {
+                canvas.drawBitmap(pacmanClosed, pacManCenterX, pacManCenterY, paint)
+            }
+            //surfaceHolder.unlockCanvasAndPost(canvas)
+            //draw(canvas)
             surfaceHolder.unlockCanvasAndPost(canvas)
         }
     }
@@ -199,8 +229,8 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
         canvas.drawBitmap(mazeBitmap, 0f, 0f, null)
 
         // Draw Pac-Man
-        paint.color = Color.YELLOW
-        canvas.drawCircle(pacMan.x, pacMan.y, 30f, paint)  // Pac-Man at its current position
+        //paint.color = Color.YELLOW
+        //canvas.drawCircle(pacMan.x, pacMan.y, 30f, paint)  // Pac-Man at its current position
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
