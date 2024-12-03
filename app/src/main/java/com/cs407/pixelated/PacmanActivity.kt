@@ -166,7 +166,7 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
     private val gridCellWidth = 33f // Adjust based on actual scaling
     private val gridCellHeight = 34f // Adjust based on actual scaling
 
-    private var pacMan = PacMan(550f, 665f, 3f, 50f,
+    private var pacMan = PacMan(550f, 665f, 3f, 35f,
         mazeMap, gridCellWidth, gridCellHeight)
 
     private var ghost = Ghost(550f, 665f, 3f, 25f,
