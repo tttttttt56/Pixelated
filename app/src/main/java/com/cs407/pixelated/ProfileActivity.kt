@@ -27,6 +27,10 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
             insets
         }
 
+        // get shared preferences from using R.string.userPasswdKV as the name
+        userPasswdKV =
+            this.getSharedPreferences(getString(R.string.userPasswdKV), Context.MODE_PRIVATE)!!
+
         userViewModel = if (injectedUserViewModel != null) {
             injectedUserViewModel
         } else {
@@ -34,19 +38,18 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
             ViewModelProvider(this).get(UserViewModel::class.java)
         }
 
-        // get shared preferences from using R.string.userPasswdKV as the name
-        userPasswdKV =
-            this.getSharedPreferences(getString(R.string.userPasswdKV), Context.MODE_PRIVATE)!!
-
         // add bar at bottom (top) to exit game
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.title = "Profile"
 
         // getting username
-        val userState = userViewModel.userState.value
+        // val usernameSP = userPasswdKV.getString("username", "defaultUsername")
+        val username = intent.getStringExtra("username")
+        val userId = intent.getIntExtra("userId", -1)
+        // val userState = userViewModel.userState.value
         val usernameTextView = findViewById<TextView>(R.id.usernameInProfile)
-        usernameTextView.text = getString(R.string.username_text, userState.name)
+        usernameTextView.text = getString(R.string.username_text, username)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

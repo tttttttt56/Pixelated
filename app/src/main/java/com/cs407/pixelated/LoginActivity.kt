@@ -89,9 +89,8 @@ class LoginActivity(
             if (loginSuccessful) {
                 try {
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    //Give input if needed
-                    //intent.putExtra("EXTRA_MESSAGE",userInput)
-                    //start activity
+                    intent.putExtra("username", currUsername)
+                    intent.putExtra("userId", appDB.userDao().getByName(currUsername).userId)
                     startActivity(intent)
                 } catch (e: Exception) {
                     Log.e("CoroutineError", "Exception occurred: ${e.message}", e)
