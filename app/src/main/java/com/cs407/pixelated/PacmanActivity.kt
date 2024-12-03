@@ -19,6 +19,9 @@ import android.view.SurfaceView
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.cs407.pixelated.Ghost.Companion.DOWN
+import com.cs407.pixelated.Ghost.Companion.LEFT
+import com.cs407.pixelated.Ghost.Companion.UP
 import com.cs407.pixelated.R
 
 class PacmanActivity : AppCompatActivity() {
@@ -147,7 +150,7 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
     private val gridCellWidth = 33f // Adjust based on actual scaling
     private val gridCellHeight = 34f // Adjust based on actual scaling
 
-    private var pacMan = PacMan(550f, 665f, 3f, 25f,
+    private var pacMan = PacMan(550f, 665f, 3f, 50f,
         mazeMap, gridCellWidth, gridCellHeight)
 
     private var ghost = Ghost(550f, 665f, 3f, 25f,
@@ -191,7 +194,7 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
 
         // Set initial movement directions for ghosts (for example, moving to the right)
         ghosts[0].direction = 5f // Moving right
-        ghosts[1].direction = 5f// Moving down
+        ghosts[1].direction = 10f// Moving down
         ghosts[2].direction = -5f // Moving left
     }
 
@@ -250,8 +253,10 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             }
 
             for (ghost in ghosts) {
+                val ghostCenterX = ghost.x - ghostBitmap.width / 2
+                val ghostCenterY = ghost.y - ghostBitmap.height / 2
                 ghost.updatePosition()  // Update ghost position based on its direction
-                canvas.drawBitmap(ghostBitmap, ghost.x, ghost.y, paint)
+                canvas.drawBitmap(ghostBitmap, ghostCenterX, ghostCenterY, paint)
             }
             surfaceHolder.unlockCanvasAndPost(canvas)
         }
@@ -263,7 +268,7 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             // Ensure collision detection happens before moving
             pacMan.movePacMan()
         }
-        ghost.updatePosition()
+        ghost.switchDirection()
     }
 
     override fun draw(canvas: Canvas) {
@@ -400,10 +405,9 @@ class Ghost(
         private val directions = arrayOf(RIGHT, DOWN, LEFT, UP)
     }
 
-    var direction: Float = RIGHT
+    var direction: Float = directions.random()
 
     fun updatePosition() {
-        // Move ghost based on the current direction and speed
         val moveX = Math.cos(direction.toDouble()).toFloat() * speed
         val moveY = Math.sin(direction.toDouble()).toFloat() * speed
 
@@ -415,10 +419,25 @@ class Ghost(
         }
     }
 
-    private fun switchDirection() {
-        // Find current direction's index and switch to the next one in the array
-        val currentIndex = directions.indexOf(direction)
-        direction = directions[(currentIndex + 1) % directions.size] // Rotate 90 degrees clockwise
+    fun switchDirection() {
+        // Filter for valid directions that are not blocked
+        val validDirections = directions.filterNot { dir ->
+            val moveX = Math.cos(dir.toDouble()).toFloat() * speed
+            val moveY = Math.sin(dir.toDouble()).toFloat() * speed
+
+            val nextX = x + moveX
+            val nextY = y + moveY
+
+            isBlocked(nextX, nextY)
+        }
+
+        // Choose a random valid direction if available
+        if (validDirections.isNotEmpty()) {
+            direction = validDirections.random()
+        } else {
+            // If no valid direction found, reverse the direction so it does not get stuck
+            direction = (direction + Math.PI.toFloat()) % (2 * Math.PI.toFloat())
+        }
     }
 
     fun isNextPositionBlocked(): Boolean {
@@ -428,34 +447,17 @@ class Ghost(
         val nextX = x + moveX
         val nextY = y + moveY
 
-        val nextGridX: Int
-        val nextGridY: Int
+        return isBlocked(nextX, nextY)
+    }
 
-        when (direction) {
-            RIGHT -> {
-                nextGridX = ((nextX + radius) / gridCellWidth).toInt()
-                nextGridY = (nextY / gridCellHeight).toInt()
-            }
-            LEFT -> {
-                nextGridX = ((nextX - radius) / gridCellWidth).toInt()
-                nextGridY = (nextY / gridCellHeight).toInt()
-            }
-            UP -> {
-                nextGridY = ((nextY - radius) / gridCellHeight).toInt()
-                nextGridX = (nextX / gridCellWidth).toInt()
-            }
-            else -> { // DOWN
-                nextGridY = ((nextY + radius) / gridCellHeight).toInt()
-                nextGridX = (nextX / gridCellWidth).toInt()
-            }
-        }
+    private fun isBlocked(nextX: Float, nextY: Float): Boolean {
+        val nextGridX: Int = ((nextX + if (direction == RIGHT) radius else if (direction == LEFT) -radius else 0f) / gridCellWidth).toInt()
+        val nextGridY: Int = ((nextY + if (direction == DOWN) radius else if (direction == UP) -radius else 0f) / gridCellHeight).toInt()
 
         return if (nextGridX in 0 until mazeMap[0].size && nextGridY in 0 until mazeMap.size) {
-            mazeMap[nextGridY][nextGridX] == 1 // 1 indicates a wall
+            mazeMap[nextGridY][nextGridX] == 1 // Hit a wall
         } else {
-            true // Out of bounds means blocked
+            true // Out of bounds
         }
     }
 }
-
-
