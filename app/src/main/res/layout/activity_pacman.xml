@@ -17,20 +17,14 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="422dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.983"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/currentScorePacman"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="0000"
-            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/highScoreString"
@@ -47,9 +41,19 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="18dp"
-            android:text="0000"
+            android:hint="0"
             android:textColor="@color/white"
             app:layout_constraintTop_toBottomOf="@id/highScoreString" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/currentScorePacman"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:hint="0"
+        android:textColor="@color/white"
+        tools:layout_editor_absoluteX="7dp"
+        tools:layout_editor_absoluteY="7dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

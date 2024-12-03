@@ -89,7 +89,7 @@ data class UserRelations(
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM user WHERE userName = :name")
+    @Query("SELECT * FROM User WHERE userName = :name")
     suspend fun getByName(name: String): User
 
     @Query("SELECT * FROM user WHERE userId = :id")
@@ -99,10 +99,20 @@ interface UserDao {
     suspend fun insert(user: User)
 }
 
+@Dao
+interface ScoreboardDao {
+    @Query("SELECT * FROM ScoreboardInfo WHERE scoreboardId = :id")
+    suspend fun getById(id: String): ScoreboardInfo
+
+    @Insert(entity = ScoreboardInfo::class)
+    suspend fun insert(score: ScoreboardInfo)
+}
+
 @Database(entities = [User::class, ScoreboardInfo::class, MapInfo::class, UserRelations::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class PixelDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+    abstract fun scoreboardDao(): ScoreboardDao
 
     companion object {
         @Volatile
@@ -112,7 +122,6 @@ abstract class PixelDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     PixelDatabase::class.java,
-                    // TODO placholder, idak what this is for
                     "pixelDatabase",
                 ).build()
                 INSTANCE = instance

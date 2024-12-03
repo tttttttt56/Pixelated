@@ -3,6 +3,7 @@ package com.cs407.pixelated;
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -14,6 +15,9 @@ import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -21,6 +25,7 @@ import com.cs407.pixelated.R
 
 class PacmanActivity : AppCompatActivity() {
     private lateinit var gameView: GameView
+    private lateinit var scoreText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +35,13 @@ class PacmanActivity : AppCompatActivity() {
 
         // Now get the reference to the GameView
         gameView = findViewById(R.id.gameView)
+        // Find the TextView from the layout
+        scoreText = findViewById(R.id.currentScorePacman)
 
         // Ensure the GameView is initialized and set up correctly
+        gameView = findViewById(R.id.gameView)
+        gameView.setScoreTextView(scoreText)
+
         gameView.startGame()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -49,7 +59,6 @@ class PacmanActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                // Handle the back button press, typically finishing the activity
                 onBackPressedDispatcher.onBackPressed()  // This finishes the current activity and navigates back
                 return true
             }
@@ -76,6 +85,13 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
     private val surfaceHolder: SurfaceHolder = holder
     private val paint: Paint = Paint()
     private var mazeBitmap: Bitmap
+    private var currScore = 0
+    private var scoreTextView: TextView? = null  // Declare the TextView variable
+
+    // Method to set the TextView reference
+    fun setScoreTextView(scoreText: TextView) {
+        this.scoreTextView = scoreText
+    }
 
     init {
         // Load the maze image (ensure it's in the drawable folder)
@@ -85,39 +101,39 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
 
     private val mazeMap = arrayOf(
         intArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(1, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 0, 1, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 1),
         intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-        intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+        intArrayOf(1, 2, 0, 1, 1, 1, 1, 2, 0, 1, 1, 1, 1, 1, 2, 0, 1, 0, 2, 1, 1, 1, 1, 1, 0, 2, 1, 1, 1, 1, 0, 2, 1),
         intArrayOf(1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1),
-        intArrayOf(1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1),
-        intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-        intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-        intArrayOf(1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1),
-        intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-        intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+        intArrayOf(1, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 1),
+        intArrayOf(1, 0, 0, 2, 0, 2, 0, 0, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 1),
+        intArrayOf(1, 2, 0, 1, 1, 1, 1, 2, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 2, 1, 1, 1, 1, 0, 2, 1),
+        intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+        intArrayOf(1, 2, 0, 2, 0, 2, 0, 2, 0, 1, 0, 0, 2, 0, 2, 0, 1, 0, 2, 0, 2, 0, 0, 1, 0, 2, 0, 2, 0, 2, 0, 2, 1),
         intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
-        intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 1, 1, 1, 1, 2, 0, 1, 0, 2, 1, 1, 1, 1, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1),
+        intArrayOf(1, 2, 0, 2, 0, 2, 0, 0, 0, 2, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 2, 0, 0, 0, 2, 0, 2, 0, 2, 1),
+        intArrayOf(1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 0, 0, 2, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1),
         intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
-        intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
-        intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
-        intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-        intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-        intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
-        intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
-        intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
-        intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
-        intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1),
+        intArrayOf(1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1),
         intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-        intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-        intArrayOf(1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1),
-        intArrayOf(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1),
-        intArrayOf(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1),
-        intArrayOf(1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1),
-        intArrayOf(1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1),
+        intArrayOf(1, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 0, 1, 0, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 1),
+        intArrayOf(1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 2, 0, 1, 0, 2, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1),
+        intArrayOf(1, 2, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 2, 1),
+        intArrayOf(1, 0, 2, 0, 2, 1, 0, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 0, 1, 2, 0, 2, 0, 1),
+        intArrayOf(1, 1, 1, 0, 0, 1, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 1, 0, 0, 1, 1, 1),
+        intArrayOf(1, 1, 1, 0, 2, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 2, 0, 1, 1, 1),
+        intArrayOf(1, 2, 0, 2, 0, 2, 0, 2, 0, 1, 0, 2, 0, 2, 0, 0, 1, 0, 0, 2, 0, 2, 0, 1, 0, 2, 0, 2, 0, 2, 0, 2, 1),
         intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-        intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-        intArrayOf(1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1),
+        intArrayOf(1, 2, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 1),
         intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
-        intArrayOf(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+        intArrayOf(1, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 1),
         intArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
     )
 
@@ -129,6 +145,18 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
 
     init {
         paint.color = Color.YELLOW
+    }
+
+    private val pellets = mutableListOf<Pellet>()
+
+    init {
+        for (y in mazeMap.indices) {
+            for (x in mazeMap[y].indices) {
+                if (mazeMap[y][x] == 2) {
+                    pellets.add(Pellet(x, y))
+                }
+            }
+        }
     }
 
     // Start the game loop
@@ -175,6 +203,8 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             // Ensure collision detection happens before moving
             pacMan.movePacMan()
         }
+        // Check if Pac-Man eats any pellets
+        checkForPelletConsumption()
     }
 
     override fun draw(canvas: Canvas) {
@@ -198,6 +228,19 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
 
         canvas.drawBitmap(mazeBitmap, 0f, 0f, null)
 
+        // Draw pellets (dots) that are not eaten
+        paint.color = Color.WHITE
+        for (pellet in pellets) {
+            if (!pellet.isEaten) {
+                canvas.drawCircle(
+                    pellet.x * gridCellWidth + gridCellWidth / 2,
+                    pellet.y * gridCellHeight + gridCellHeight / 2,
+                    8f,  // Size of the dot
+                    paint
+                )
+            }
+        }
+
         // Draw Pac-Man
         paint.color = Color.YELLOW
         canvas.drawCircle(pacMan.x, pacMan.y, 30f, paint)  // Pac-Man at its current position
@@ -217,6 +260,29 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             pacMan.isDirectionSet = true
         }
         return true
+    }
+
+    fun checkForPelletConsumption() {
+        for (pellet in pellets) {
+            // Convert the grid positions of the pellet to screen coordinates
+            val pelletX = pellet.x * gridCellWidth + gridCellWidth / 2
+            val pelletY = pellet.y * gridCellHeight + gridCellHeight / 2
+
+            // Check if Pac-Man's position is close to the pellet's position
+            val distance = Math.sqrt(Math.pow(pacMan.x.toDouble() - pelletX, 2.0)
+                    + Math.pow(pacMan.y.toDouble() - pelletY, 2.0))
+            if (distance < pacMan.radius) {
+                if (!pellet.isEaten) {
+                    pellet.isEaten = true
+                    //TODO Add points to the score
+                    //Use runOnUiThread to update the UI element
+                    (context as? PacmanActivity)?.runOnUiThread {
+                        currScore += 10  // Increase score
+                        scoreTextView?.text = currScore.toString() // Set the updated score
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -299,5 +365,8 @@ class PacMan(var x: Float, var y: Float, val speed: Float, val radius: Float,
     }
 }
 
+class Pellet(val x: Int, val y: Int) {
+    var isEaten: Boolean = false
+}
 
 

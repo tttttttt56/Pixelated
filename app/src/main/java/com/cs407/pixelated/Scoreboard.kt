@@ -2,6 +2,7 @@ package com.cs407.pixelated
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -22,6 +23,10 @@ class Scoreboard : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.title = "Scoreboard"
+
+        val recentScore = intent.getIntExtra("recentScore", 0)
+        val recentScoreText = findViewById<TextView>(R.id.recentScorePacman)
+        recentScoreText.text = getString(R.string.pacman_recent, recentScore)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

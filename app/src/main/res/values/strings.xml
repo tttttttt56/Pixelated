@@ -29,4 +29,5 @@
     <string name="galaga_highscore">Galaga:</string>
     <string name="pacman_highscore">Pac-Man:</string>
     <string name="centipede_highscore">Centipede:</string>
+    <string name="pacman_recent">%d</string>
 </resources>

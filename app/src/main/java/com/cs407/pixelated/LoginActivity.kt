@@ -89,8 +89,6 @@ class LoginActivity(
             if (loginSuccessful) {
                 try {
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    intent.putExtra("username", currUsername)
-                    intent.putExtra("userId", appDB.userDao().getByName(currUsername).userId)
                     startActivity(intent)
                 } catch (e: Exception) {
                     Log.e("CoroutineError", "Exception occurred: ${e.message}", e)
@@ -137,6 +135,11 @@ class LoginActivity(
             // insert the new user into the Room database (implement this in your User DAO)
             val currUser = User(0, name)
             appDB.userDao().insert(currUser)
+            // insert user's scoreboard info (declared, not initialized) into Room database
+            val currScoreboardInfo = ScoreboardInfo(0,0,0,
+                0,0,0,0)
+            appDB.scoreboardDao().insert(currScoreboardInfo)
+            // i just dont wanna get rid of this for fear of messing something up
             val updateUserIdInUserViewModel = appDB.userDao().getByName(name).userId
             userViewModel.setUser(UserState(updateUserIdInUserViewModel, name, passwdPlain))
 
