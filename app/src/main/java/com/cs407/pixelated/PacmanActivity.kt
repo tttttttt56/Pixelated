@@ -8,7 +8,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Paint
+import android.graphics.Path
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MenuItem
@@ -59,6 +61,7 @@ class PacmanActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
+                // Handle the back button press, typically finishing the activity
                 onBackPressedDispatcher.onBackPressed()  // This finishes the current activity and navigates back
                 return true
             }
@@ -93,10 +96,31 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
         this.scoreTextView = scoreText
     }
 
+    // Variables to keep track of PacMan Animation
+    private lateinit var pacmanOpen: Bitmap
+    private lateinit var pacmanClosed: Bitmap
+    private lateinit var ghostBitmap: Bitmap
+    private var mouthOpen = true
+    private var frameCounter = 0
+
+    // Ghost
+    private val ghosts: MutableList<Ghost> = mutableListOf() // List to store ghosts
+
     init {
         // Load the maze image (ensure it's in the drawable folder)
+        pacmanOpen = BitmapFactory.decodeResource(context.resources, R.drawable.pacman_open)
+        pacmanClosed = BitmapFactory.decodeResource(context.resources, R.drawable.pacman_closed)
         mazeBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.maze)
         mazeBitmap = Bitmap.createScaledBitmap(mazeBitmap, 1089, 1188, true)
+
+        // Resize Pac-Man
+        pacmanOpen = Bitmap.createScaledBitmap(pacmanOpen, 70, 70, true)
+        pacmanClosed = Bitmap.createScaledBitmap(pacmanClosed, 70, 70, true)
+
+        // Handle the Ghosts
+        ghostBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.ghost)
+        ghostBitmap = Bitmap.createScaledBitmap(ghostBitmap, 70, 70, true)
+
     }
 
     private val mazeMap = arrayOf(
@@ -142,6 +166,51 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
 
     private var pacMan = PacMan(550f, 665f, 3f, 25f,
         mazeMap, gridCellWidth, gridCellHeight)
+
+    private var ghost = Ghost(550f, 665f, 3f, 25f,
+        mazeMap, gridCellWidth, gridCellHeight)
+
+    // Init ghosts positions
+    init {
+        ghosts.add(
+            Ghost(
+                100f,
+                100f,
+                radius = 25f,
+                mazeMap = mazeMap,
+                gridCellWidth = 33f,
+                gridCellHeight = 34f,
+                speed = 5f
+            )
+        ) // First ghost at (100, 100)
+        ghosts.add(
+            Ghost(
+                200f,
+                200f,
+                radius = 25f,
+                mazeMap = mazeMap,
+                gridCellWidth = 33f,
+                gridCellHeight = 34f,
+                speed = 5f
+            )
+        ) // Second ghost at (200, 200)
+        ghosts.add(
+            Ghost(
+                300f,
+                300f,
+                radius = 25f,
+                mazeMap = mazeMap,
+                gridCellWidth = 33f,
+                gridCellHeight = 34f,
+                speed = 5f
+            )
+        ) // Third ghost at (300, 300)
+
+        // Set initial movement directions for ghosts (for example, moving to the right)
+        ghosts[0].direction = 5f // Moving right
+        ghosts[1].direction = 5f// Moving down
+        ghosts[2].direction = -5f // Moving left
+    }
 
     init {
         paint.color = Color.YELLOW
@@ -193,6 +262,26 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             val canvas = surfaceHolder.lockCanvas()
             update()  // Update game state (this includes moving Pac-Man)
             draw(canvas)
+            // Animate Pac-Man’s mouth every few frames
+            frameCounter++
+            if (frameCounter % 20 == 0) { // Animation speed
+                mouthOpen = !mouthOpen
+            }
+            // Draw Pac-Man with the current frame
+
+            // Calculate offsets to center the image
+            val pacManCenterX = pacMan.x - pacmanOpen.width / 2
+            val pacManCenterY = pacMan.y - pacmanOpen.height / 2
+            if (mouthOpen) {
+                canvas.drawBitmap(pacmanOpen, pacManCenterX, pacManCenterY, paint)
+            } else {
+                canvas.drawBitmap(pacmanClosed, pacManCenterX, pacManCenterY, paint)
+            }
+
+            for (ghost in ghosts) {
+                ghost.updatePosition()  // Update ghost position based on its direction
+                canvas.drawBitmap(ghostBitmap, ghost.x, ghost.y, paint)
+            }
             surfaceHolder.unlockCanvasAndPost(canvas)
         }
     }
@@ -205,6 +294,7 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
         }
         // Check if Pac-Man eats any pellets
         checkForPelletConsumption()
+        ghost.updatePosition()
     }
 
     override fun draw(canvas: Canvas) {
@@ -242,8 +332,8 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
         }
 
         // Draw Pac-Man
-        paint.color = Color.YELLOW
-        canvas.drawCircle(pacMan.x, pacMan.y, 30f, paint)  // Pac-Man at its current position
+        //paint.color = Color.YELLOW
+        //canvas.drawCircle(pacMan.x, pacMan.y, 30f, paint)  // Pac-Man at its current position
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -367,6 +457,76 @@ class PacMan(var x: Float, var y: Float, val speed: Float, val radius: Float,
 
 class Pellet(val x: Int, val y: Int) {
     var isEaten: Boolean = false
+}
+class Ghost(
+    var x: Float, var y: Float, val speed: Float, val radius: Float,
+    val mazeMap: Array<IntArray>, val gridCellWidth: Float, val gridCellHeight: Float
+) {
+    companion object {
+        const val RIGHT = 0f
+        const val DOWN = Math.PI.toFloat() / 2f
+        const val LEFT = Math.PI.toFloat()
+        const val UP = 3 * Math.PI.toFloat() / 2f
+
+        private val directions = arrayOf(RIGHT, DOWN, LEFT, UP)
+    }
+
+    var direction: Float = RIGHT
+
+    fun updatePosition() {
+        // Move ghost based on the current direction and speed
+        val moveX = Math.cos(direction.toDouble()).toFloat() * speed
+        val moveY = Math.sin(direction.toDouble()).toFloat() * speed
+
+        x += moveX
+        y += moveY
+
+        if (isNextPositionBlocked()) {
+            switchDirection()
+        }
+    }
+
+    private fun switchDirection() {
+        // Find current direction's index and switch to the next one in the array
+        val currentIndex = directions.indexOf(direction)
+        direction = directions[(currentIndex + 1) % directions.size] // Rotate 90 degrees clockwise
+    }
+
+    fun isNextPositionBlocked(): Boolean {
+        val moveX = Math.cos(direction.toDouble()).toFloat() * speed
+        val moveY = Math.sin(direction.toDouble()).toFloat() * speed
+
+        val nextX = x + moveX
+        val nextY = y + moveY
+
+        val nextGridX: Int
+        val nextGridY: Int
+
+        when (direction) {
+            RIGHT -> {
+                nextGridX = ((nextX + radius) / gridCellWidth).toInt()
+                nextGridY = (nextY / gridCellHeight).toInt()
+            }
+            LEFT -> {
+                nextGridX = ((nextX - radius) / gridCellWidth).toInt()
+                nextGridY = (nextY / gridCellHeight).toInt()
+            }
+            UP -> {
+                nextGridY = ((nextY - radius) / gridCellHeight).toInt()
+                nextGridX = (nextX / gridCellWidth).toInt()
+            }
+            else -> { // DOWN
+                nextGridY = ((nextY + radius) / gridCellHeight).toInt()
+                nextGridX = (nextX / gridCellWidth).toInt()
+            }
+        }
+
+        return if (nextGridX in 0 until mazeMap[0].size && nextGridY in 0 until mazeMap.size) {
+            mazeMap[nextGridY][nextGridX] == 1 // 1 indicates a wall
+        } else {
+            true // Out of bounds means blocked
+        }
+    }
 }
 
 
