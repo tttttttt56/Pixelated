@@ -89,6 +89,9 @@ class LoginActivity(
             if (loginSuccessful) {
                 try {
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    val username = userViewModel.userState.value.name
+                    val userId = appDB.userDao().getByName(username).userId
+                    intent.putExtra("userId", userId)
                     startActivity(intent)
                 } catch (e: Exception) {
                     Log.e("CoroutineError", "Exception occurred: ${e.message}", e)
@@ -139,6 +142,9 @@ class LoginActivity(
             val currScoreboardInfo = ScoreboardInfo(0,0,0,
                 0,0,0,0)
             appDB.scoreboardDao().insert(currScoreboardInfo)
+            // insert relations
+            val updatedUserId = appDB.userDao().getByName(name).userId
+            appDB.scoreboardDao().upsertInfo(currScoreboardInfo, updatedUserId)
             // i just dont wanna get rid of this for fear of messing something up
             val updateUserIdInUserViewModel = appDB.userDao().getByName(name).userId
             userViewModel.setUser(UserState(updateUserIdInUserViewModel, name, passwdPlain))

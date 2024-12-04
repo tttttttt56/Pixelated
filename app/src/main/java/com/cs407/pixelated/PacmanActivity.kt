@@ -3,31 +3,35 @@ package com.cs407.pixelated;
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Matrix
 import android.graphics.Paint
-import android.graphics.Path
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import android.widget.EditText
-import android.widget.ImageButton
+import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.cs407.pixelated.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PacmanActivity : AppCompatActivity() {
     private lateinit var gameView: GameView
-    private lateinit var scoreText: TextView
+    private lateinit var recentScoreText: TextView
+    private lateinit var highestScoreText: TextView
+    private lateinit var gameOverText: TextView
+    private lateinit var tryAgainButton: Button
+    private lateinit var appDB: PixelDatabase
+    private var userId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,12 +41,18 @@ class PacmanActivity : AppCompatActivity() {
 
         // Now get the reference to the GameView
         gameView = findViewById(R.id.gameView)
-        // Find the TextView from the layout
-        scoreText = findViewById(R.id.currentScorePacman)
+        // Find the views from the layout
+        recentScoreText = findViewById(R.id.currentScorePacman)
+        highestScoreText = findViewById(R.id.highscorePacman)
+        gameOverText = findViewById(R.id.overText)
+        tryAgainButton = findViewById(R.id.tryAgainButton)
 
         // Ensure the GameView is initialized and set up correctly
         gameView = findViewById(R.id.gameView)
-        gameView.setScoreTextView(scoreText)
+        gameView.setScoreTextView(recentScoreText)
+        gameView.setHighestTextView(highestScoreText)
+        gameView.setOverTextView(gameOverText)
+        gameView.setAgainButton(tryAgainButton)
 
         gameView.startGame()
 
@@ -56,6 +66,14 @@ class PacmanActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.title = "Pacman"
+
+        appDB = PixelDatabase.getDatabase(this)
+        userId = intent.getIntExtra("userId", -1)
+        gameView.setUserId(userId)
+
+        tryAgainButton.setOnClickListener() {
+            gameView.restartGame()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -80,6 +98,11 @@ class PacmanActivity : AppCompatActivity() {
         // Resumes the game loop when the activity is resumed
         gameView.resumeGame()
     }
+
+    override fun onStop() {
+        super.onStop()
+        // TODO when game stops (player wins or loses) update scores
+    }
 }
 
 class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, attrs), Runnable {
@@ -90,16 +113,41 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
     private var mazeBitmap: Bitmap
     private var currScore = 0
     private var scoreTextView: TextView? = null  // Declare the TextView variable
+    private var userId: Int? = null  // Add the userId property
+    private lateinit var appDB: PixelDatabase
+    private var highestTextView: TextView? = null
+    private var gameOverTextView: TextView? = null
+    private var tryAgainButton: Button? = null
 
-    // Method to set the TextView reference
+    // Setter method for userId
+    fun setUserId(userId: Int?) {
+        this.userId = userId
+    }
+
+    // method to set the TextView references
     fun setScoreTextView(scoreText: TextView) {
         this.scoreTextView = scoreText
     }
 
+    fun setHighestTextView(highestScoreText: TextView) {
+        this.highestTextView = highestScoreText
+    }
+
+    fun setOverTextView(gameOverText: TextView) {
+        this.gameOverTextView = gameOverText
+    }
+
+    fun setAgainButton(tryAgainButton: Button) {
+        this.tryAgainButton = tryAgainButton
+    }
+
     // Variables to keep track of PacMan Animation
-    private lateinit var pacmanOpen: Bitmap
-    private lateinit var pacmanClosed: Bitmap
-    private lateinit var ghostBitmap: Bitmap
+    private var pacmanOpen: Bitmap
+    private var pacmanClosed: Bitmap
+    private var ghostBitmapBlue: Bitmap
+    private var ghostBitmapRed: Bitmap
+    private var ghostBitmapPink: Bitmap
+    private var ghostBitmapOrange: Bitmap
     private var mouthOpen = true
     private var frameCounter = 0
 
@@ -118,10 +166,28 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
         pacmanClosed = Bitmap.createScaledBitmap(pacmanClosed, 70, 70, true)
 
         // Handle the Ghosts
-        ghostBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.ghost)
-        ghostBitmap = Bitmap.createScaledBitmap(ghostBitmap, 70, 70, true)
-
+        // blue
+        ghostBitmapBlue = BitmapFactory.decodeResource(context.resources, R.drawable.ghost)
+        ghostBitmapBlue = Bitmap.createScaledBitmap(ghostBitmapBlue, 70, 70, true)
+        // red
+        ghostBitmapRed = BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red)
+        ghostBitmapRed = Bitmap.createScaledBitmap(ghostBitmapRed, 70, 70, true)
+        // pink
+        ghostBitmapPink = BitmapFactory.decodeResource(context.resources, R.drawable.ghost_pink)
+        ghostBitmapPink = Bitmap.createScaledBitmap(ghostBitmapPink, 70, 70, true)
+        // orange
+        ghostBitmapOrange = BitmapFactory.decodeResource(context.resources, R.drawable.ghost_orange)
+        ghostBitmapOrange = Bitmap.createScaledBitmap(ghostBitmapOrange, 70, 70, true)
     }
+
+    private val ghostBitmaps: MutableList<Bitmap> = mutableListOf()
+    init {
+        ghostBitmaps.add(ghostBitmapBlue)
+        ghostBitmaps.add(ghostBitmapRed)
+        ghostBitmaps.add(ghostBitmapPink)
+        ghostBitmaps.add(ghostBitmapOrange)
+    }
+
 
     private val mazeMap = arrayOf(
         intArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
@@ -205,11 +271,23 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
                 speed = 5f
             )
         ) // Third ghost at (300, 300)
+        ghosts.add(
+            Ghost(
+                400f,
+                400f,
+                radius = 25f,
+                mazeMap = mazeMap,
+                gridCellWidth = 33f,
+                gridCellHeight = 34f,
+                speed = 5f
+            )
+        ) // fourth ghost at (400, 400)
 
         // Set initial movement directions for ghosts (for example, moving to the right)
         ghosts[0].direction = 5f // Moving right
         ghosts[1].direction = 5f// Moving down
         ghosts[2].direction = -5f // Moving left
+        ghosts[3].direction = -5f // Moving left
     }
 
     init {
@@ -278,9 +356,12 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
                 canvas.drawBitmap(pacmanClosed, pacManCenterX, pacManCenterY, paint)
             }
 
+            var count = 0
+
             for (ghost in ghosts) {
                 ghost.updatePosition()  // Update ghost position based on its direction
-                canvas.drawBitmap(ghostBitmap, ghost.x, ghost.y, paint)
+                canvas.drawBitmap(ghostBitmaps[count], ghost.x, ghost.y, paint)
+                count = count + 1
             }
             surfaceHolder.unlockCanvasAndPost(canvas)
         }
@@ -294,6 +375,7 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
         }
         // Check if Pac-Man eats any pellets
         checkForPelletConsumption()
+        checkForCollisions()
         ghost.updatePosition()
     }
 
@@ -352,7 +434,87 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
         return true
     }
 
+    fun checkForCollisions() {
+        for (ghost in ghosts) {
+            // Calculate the distance between Pac-Man and the ghost
+            val dx = pacMan.x - ghost.x
+            val dy = pacMan.y - ghost.y
+            val distance = Math.sqrt((dx * dx + dy * dy).toDouble())
+
+            // Check if the distance is less than the sum of their radii (collision threshold)
+            if (distance < pacMan.radius + ghost.radius) {
+                // Handle collision (e.g., end the game or reduce life)
+                handleCollision(ghost)
+                break // Stop checking further if a collision has occurred
+            }
+        }
+    }
+
+    fun handleCollision(ghost: Ghost) {
+        // Example action: reset the game or end it
+        // You can add any behavior you'd like here (e.g., reduce lives, show game over message, etc.)
+
+        // Stop the game or handle life decrement
+        isRunning = false
+        // Show a "Game Over" screen or reset Pac-Man’s position
+
+        // Optionally, restart the game or show a game over message
+        // For example, you could trigger a game over screen here
+        (context as? PacmanActivity)?.runOnUiThread {
+            // show game over
+            val gameOverText = gameOverTextView
+            gameOverText?.visibility = View.VISIBLE
+            // show try again
+            var tryAgainButton = tryAgainButton
+            tryAgainButton?.visibility = View.VISIBLE
+        }
+    }
+
+    fun restartGame() {
+        // Reset Pac-Man's position and score
+        pacMan.x = 550f
+        pacMan.y = 665f
+        pacMan.isDirectionSet = false
+        currScore = 0
+        scoreTextView?.text = currScore.toString()
+
+        var initialX = 100f
+        var initialY = 100f
+
+        // Reset ghosts' positions and directions
+        ghosts.forEach { ghost ->
+            ghost.x = initialX // store initial positions in the Ghost class
+            ghost.y = initialY
+            ghost.direction = Ghost.RIGHT // or any other initial direction
+            initialX = initialX + 100
+            initialY = initialY + 100
+        }
+
+        // todo reset pellets
+        for (i in mazeMap.indices) {           // Iterating over rows
+            for (j in mazeMap[i].indices) {    // Iterating over columns in row i
+                for (pellet in pellets) {
+                    if (pellet.calculateX() == j && pellet.calculateY() == i) {
+                        pellet.isEaten = false
+                    }
+                }
+            }
+        }
+
+        // todo pass maze map to resume? bc it looks like its updated correctly its just not passed
+
+        // clear text
+        val gameOverText = gameOverTextView
+        gameOverText?.visibility = View.GONE
+        // show try again
+        var tryAgainButton = tryAgainButton
+        tryAgainButton?.visibility = View.GONE
+
+        resumeGame()
+    }
+
     fun checkForPelletConsumption() {
+        appDB = PixelDatabase.getDatabase(context)
         for (pellet in pellets) {
             // Convert the grid positions of the pellet to screen coordinates
             val pelletX = pellet.x * gridCellWidth + gridCellWidth / 2
@@ -367,8 +529,24 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
                     //TODO Add points to the score
                     //Use runOnUiThread to update the UI element
                     (context as? PacmanActivity)?.runOnUiThread {
-                        currScore += 10  // Increase score
-                        scoreTextView?.text = currScore.toString() // Set the updated score
+                        // increase current score, set updated score
+                        currScore += 10
+                        scoreTextView?.text = currScore.toString()
+                        // update high score when necessary
+                        CoroutineScope(Dispatchers.Default).launch {
+                            val currentId = userId
+                            val scoreboardId = appDB.userDao().getScoreboardIdByUserId(currentId!!).toString()
+                            // update current score
+                            appDB.scoreboardDao().updateRecentPacman(scoreboardId, currScore.toString())
+                            var highScore = appDB.scoreboardDao().getHighscoreByScoreboardId(scoreboardId.toInt())
+                            if (currScore > highScore!!) {
+                                highScore = currScore
+                                appDB.scoreboardDao().updateHighestPacman(scoreboardId, highScore.toString())
+                            }
+                            (context as? PacmanActivity)?.runOnUiThread {
+                                highestTextView?.text = highScore.toString()
+                            }
+                        }
                     }
                 }
             }
@@ -414,7 +592,7 @@ class PacMan(var x: Float, var y: Float, val speed: Float, val radius: Float,
         if (direction == RIGHT) {
             nextGridX = ((nextX + radius) / gridCellWidth).toInt()
             nextGridY = (nextY / gridCellHeight).toInt()
-        } else if (direction == LEFT){
+        } else if (direction == LEFT) {
             nextGridX = ((nextX - radius) / gridCellWidth).toInt()
             nextGridY = (nextY / gridCellHeight).toInt()
         } else if (direction == UP) {
@@ -457,6 +635,14 @@ class PacMan(var x: Float, var y: Float, val speed: Float, val radius: Float,
 
 class Pellet(val x: Int, val y: Int) {
     var isEaten: Boolean = false
+
+    fun calculateX(): Int {
+        return x
+    }
+
+    fun calculateY(): Int {
+        return y
+    }
 }
 class Ghost(
     var x: Float, var y: Float, val speed: Float, val radius: Float,
@@ -489,7 +675,8 @@ class Ghost(
     private fun switchDirection() {
         // Find current direction's index and switch to the next one in the array
         val currentIndex = directions.indexOf(direction)
-        direction = directions[(currentIndex + 1) % directions.size] // Rotate 90 degrees clockwise
+        val randomAngle = (1..3).random()
+        direction = directions[(currentIndex + randomAngle) % directions.size] // Rotate 90 degrees clockwise
     }
 
     fun isNextPositionBlocked(): Boolean {

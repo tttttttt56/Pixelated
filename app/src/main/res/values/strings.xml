@@ -20,6 +20,8 @@
     <string name="favorite_game">Favorite Game: </string>
     <string name="favorite_arcade">Favorite Arcade: </string>
     <string name="achievements">Achievements: </string>
+    <string name="game_over">Game Over</string>
+    <string name="restart">Tap to try again!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="highScore">"High Score: "</string>
@@ -30,4 +32,5 @@
     <string name="pacman_highscore">Pac-Man:</string>
     <string name="centipede_highscore">Centipede:</string>
     <string name="pacman_recent">%d</string>
+    <string name="pacman_high">%d</string>
 </resources>

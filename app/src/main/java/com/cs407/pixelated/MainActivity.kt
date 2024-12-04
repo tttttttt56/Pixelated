@@ -31,6 +31,9 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         toolbar.title = "Pixelated"
 
+        // get user id
+        val userId = intent.getIntExtra("userId", -1)
+
         val profileButton = findViewById<ImageButton>(R.id.profile_button)
         profileButton.setOnClickListener { view ->
             showProfileMenu(view)
@@ -45,9 +48,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<ImageButton>(R.id.pacman).setOnClickListener(){
-            val intent = Intent(this,PacmanActivity::class.java)
-            //Give input if needed
-            //intent.putExtra("EXTRA_MESSAGE",userInput)
+            val userIntent = Intent(this, PacmanActivity::class.java)
+            intent = userIntent
+            intent.putExtra("userId", userId)
             //start activity
             startActivity(intent)
         }
@@ -69,9 +72,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.scoreboard).setOnClickListener(){
-            val intent = Intent(this,Scoreboard::class.java)
-            //Give input if needed
-            //intent.putExtra("EXTRA_MESSAGE",userInput)
+            val userIntent = Intent(this, Scoreboard::class.java)
+            intent = userIntent
+            intent.putExtra("userId", userId)
             //start activity
             startActivity(intent)
         }

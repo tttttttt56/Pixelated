@@ -56,14 +56,8 @@ data class ScoreboardInfo(
     val recentCentipede: Int
 )
 
-@Entity
-data class MapInfo(
-    @PrimaryKey(autoGenerate = true) val mapId: Int = 0,
-    val favoriteLocation: String
-)
-
 @Entity(
-    primaryKeys = ["userId", "scoreboardId", "mapId"],
+    primaryKeys = ["userId", "scoreboardId"],
     foreignKeys = [ForeignKey(
         entity = User::class,
         parentColumns = ["userId"],
@@ -74,17 +68,11 @@ data class MapInfo(
         parentColumns = ["scoreboardId"],
         childColumns = ["scoreboardId"],
         onDelete = ForeignKey.CASCADE
-    ), ForeignKey(
-        entity = MapInfo::class,
-        parentColumns = ["mapId"],
-        childColumns = ["mapId"],
-        onDelete = ForeignKey.CASCADE
     )]
 )
 data class UserRelations(
     val userId: Int,
-    val scoreboardId: Int,
-    val mapId: Int
+    val scoreboardId: Int
 )
 
 @Dao
@@ -95,6 +83,9 @@ interface UserDao {
     @Query("SELECT * FROM user WHERE userId = :id")
     suspend fun getById(id: String): User
 
+    @Query("SELECT scoreboardId FROM UserRelations WHERE userId = :userId LIMIT 1")
+    suspend fun getScoreboardIdByUserId(userId: Int): Int
+
     @Insert(entity = User::class)
     suspend fun insert(user: User)
 }
@@ -104,11 +95,42 @@ interface ScoreboardDao {
     @Query("SELECT * FROM ScoreboardInfo WHERE scoreboardId = :id")
     suspend fun getById(id: String): ScoreboardInfo
 
+    @Upsert(entity = ScoreboardInfo::class)
+    suspend fun upsert(score: ScoreboardInfo): Long
+
+    @Query("SELECT scoreboardId FROM ScoreboardInfo WHERE rowid = :rowId")
+    suspend fun getByRowId(rowId: Long): Int
+
+    @Query("UPDATE ScoreboardInfo SET recentPacman = :score WHERE scoreboardId = :id")
+    suspend fun updateRecentPacman(id: String, score: String)
+
+    @Query("UPDATE ScoreboardInfo SET highestPacman = :score WHERE scoreboardId = :id")
+    suspend fun updateHighestPacman(id: String, score: String)
+
+    @Query("SELECT recentPacman FROM ScoreboardInfo WHERE scoreboardId = :scoreboardId")
+    suspend fun getRecentScoreByScoreboardId(scoreboardId: Int): Int?
+
+    @Query("SELECT highestPacman FROM ScoreboardInfo WHERE scoreboardId = :scoreboardId")
+    suspend fun getHighscoreByScoreboardId(scoreboardId: Int): Int?
+
     @Insert(entity = ScoreboardInfo::class)
     suspend fun insert(score: ScoreboardInfo)
+
+    @Insert
+    suspend fun insertRelation(userAndScoreboard: UserRelations)
+
+    @Transaction
+    suspend fun upsertInfo(score: ScoreboardInfo, userId: Int) {
+        val rowId = upsert(score)
+        if (score.scoreboardId == 0) {
+            val scoreboardId = getByRowId(rowId)
+            //TODO dont have api key, 0 is placeholder
+            insertRelation(UserRelations(userId, scoreboardId))
+        }
+    }
 }
 
-@Database(entities = [User::class, ScoreboardInfo::class, MapInfo::class, UserRelations::class], version = 1)
+@Database(entities = [User::class, ScoreboardInfo::class, UserRelations::class], version = 2)
 @TypeConverters(Converters::class)
 abstract class PixelDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
@@ -123,7 +145,7 @@ abstract class PixelDatabase : RoomDatabase() {
                     context.applicationContext,
                     PixelDatabase::class.java,
                     "pixelDatabase",
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 instance
             }

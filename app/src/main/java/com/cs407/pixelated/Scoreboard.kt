@@ -7,8 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class Scoreboard : AppCompatActivity() {
+    private lateinit var appDB: PixelDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,9 +30,22 @@ class Scoreboard : AppCompatActivity() {
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.title = "Scoreboard"
 
-        val recentScore = intent.getIntExtra("recentScore", 0)
-        val recentScoreText = findViewById<TextView>(R.id.recentScorePacman)
-        recentScoreText.text = getString(R.string.pacman_recent, recentScore)
+        // initialize database
+        appDB = PixelDatabase.getDatabase(this)
+
+        // update scoreboard (pacman's scores)
+        val userId = intent.getIntExtra("userId", 0)
+        CoroutineScope(Dispatchers.Default).launch {
+            val scoreboardId = appDB.userDao().getScoreboardIdByUserId(userId)
+            val recentScore = appDB.scoreboardDao().getRecentScoreByScoreboardId(scoreboardId)
+            val highScore = appDB.scoreboardDao().getHighscoreByScoreboardId(scoreboardId)
+            val recentScoreText = findViewById<TextView>(R.id.recentScorePacman)
+            val highScoreText = findViewById<TextView>(R.id.highScorePacman)
+            withContext(Dispatchers.Main) {
+                recentScoreText.text = getString(R.string.pacman_recent, recentScore)
+                highScoreText.text = getString(R.string.pacman_high, highScore)
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
