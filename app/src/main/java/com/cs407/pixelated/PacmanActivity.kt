@@ -23,10 +23,6 @@ import androidx.core.view.WindowInsetsCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.cs407.pixelated.Ghost.Companion.DOWN
-import com.cs407.pixelated.Ghost.Companion.LEFT
-import com.cs407.pixelated.Ghost.Companion.UP
-import com.cs407.pixelated.R
 
 class PacmanActivity : AppCompatActivity() {
     private lateinit var gameView: GameView
@@ -34,6 +30,8 @@ class PacmanActivity : AppCompatActivity() {
     private lateinit var highestScoreText: TextView
     private lateinit var gameOverText: TextView
     private lateinit var tryAgainButton: Button
+    private lateinit var youWonText: TextView
+    private lateinit var playAgainButton: Button
     private lateinit var appDB: PixelDatabase
     private var userId: Int? = null
 
@@ -50,6 +48,8 @@ class PacmanActivity : AppCompatActivity() {
         highestScoreText = findViewById(R.id.highscorePacman)
         gameOverText = findViewById(R.id.overText)
         tryAgainButton = findViewById(R.id.tryAgainButton)
+        youWonText = findViewById(R.id.wonText)
+        playAgainButton = findViewById(R.id.playAgainButton)
 
         // Ensure the GameView is initialized and set up correctly
         gameView = findViewById(R.id.gameView)
@@ -57,6 +57,8 @@ class PacmanActivity : AppCompatActivity() {
         gameView.setHighestTextView(highestScoreText)
         gameView.setOverTextView(gameOverText)
         gameView.setAgainButton(tryAgainButton)
+        gameView.setWonTextView(youWonText)
+        gameView.setPlayButton(playAgainButton)
 
         gameView.startGame()
 
@@ -76,6 +78,9 @@ class PacmanActivity : AppCompatActivity() {
         gameView.setUserId(userId)
 
         tryAgainButton.setOnClickListener() {
+            gameView.restartGame()
+        }
+        playAgainButton.setOnClickListener() {
             gameView.restartGame()
         }
     }
@@ -122,6 +127,8 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
     private var highestTextView: TextView? = null
     private var gameOverTextView: TextView? = null
     private var tryAgainButton: Button? = null
+    private var youWonTextView: TextView? = null
+    private var playAgainButton: Button? = null
 
     // Setter method for userId
     fun setUserId(userId: Int?) {
@@ -143,6 +150,14 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
 
     fun setAgainButton(tryAgainButton: Button) {
         this.tryAgainButton = tryAgainButton
+    }
+
+    fun setWonTextView(youWonText: TextView) {
+        this.youWonTextView = youWonText
+    }
+
+    fun setPlayButton(playAgainButton: Button) {
+        this.playAgainButton = playAgainButton
     }
 
     // Variables to keep track of PacMan Animation
@@ -171,7 +186,7 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
 
         // Handle the Ghosts
         // blue
-        ghostBitmapBlue = BitmapFactory.decodeResource(context.resources, R.drawable.ghost)
+        ghostBitmapBlue = BitmapFactory.decodeResource(context.resources, R.drawable.ghost_blue)
         ghostBitmapBlue = Bitmap.createScaledBitmap(ghostBitmapBlue, 70, 70, true)
         // red
         ghostBitmapRed = BitmapFactory.decodeResource(context.resources, R.drawable.ghost_red)
@@ -384,6 +399,7 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
         checkForPelletConsumption()
         checkForCollisions()
         ghost.updatePosition()
+        checkIfGameWon()
     }
 
     override fun draw(canvas: Canvas) {
@@ -477,6 +493,32 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
         }
     }
 
+    fun checkIfGameWon() {
+        // Stop the game or handle life decrement
+        var allPelletsEaten = true
+        for (pellet in pellets) {
+            if (pellet.isEaten == false) {
+                allPelletsEaten = false
+            }
+        }
+
+        if (allPelletsEaten) {
+            isRunning = false
+            // Show a "Game Over" screen or reset Pac-Man’s position
+
+            // Optionally, restart the game or show a game over message
+            // For example, you could trigger a game over screen here
+            (context as? PacmanActivity)?.runOnUiThread {
+                // show game won
+                val youWonText = youWonTextView
+                youWonText?.visibility = View.VISIBLE
+                // show play again
+                var playAgainButton = playAgainButton
+                playAgainButton?.visibility = View.VISIBLE
+            }
+        }
+    }
+
     fun restartGame() {
         // Reset Pac-Man's position and score
         pacMan.x = 550f
@@ -508,14 +550,18 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             }
         }
 
-        // todo pass maze map to resume? bc it looks like its updated correctly its just not passed
-
         // clear text
         val gameOverText = gameOverTextView
         gameOverText?.visibility = View.GONE
-        // show try again
+        // clear try again
         var tryAgainButton = tryAgainButton
         tryAgainButton?.visibility = View.GONE
+        // clear game won
+        val youWonText = youWonTextView
+        youWonText?.visibility = View.GONE
+        // clear play again
+        var playAgainButton = playAgainButton
+        playAgainButton?.visibility = View.GONE
 
         resumeGame()
     }

@@ -20,8 +20,14 @@
     <string name="favorite_game">Favorite Game: </string>
     <string name="favorite_arcade">Favorite Arcade: </string>
     <string name="achievements">Achievements: </string>
-    <string name="game_over">Game Over</string>
-    <string name="restart">Tap to try again!</string>
+    <string name="game_over">GAME OVER</string>
+    <string name="restart">Tap to try again</string>
+    <string name="you_won">YOU WON!</string>
+    <string name="play_again">Tap to play again</string>
+    <string name="blinky">SHADOW - - - - "BLINKY"</string>
+    <string name="pinky">SPEEDY- - - - - "PINKY"</string>
+    <string name="inky">BASHFUL- - - - - "INKY"</string>
+    <string name="clyde">POKEY - - - - - "CLYDE"</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="highScore">"High Score: "</string>

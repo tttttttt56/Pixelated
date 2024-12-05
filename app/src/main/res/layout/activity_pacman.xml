@@ -32,8 +32,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
+            android:fontFamily="@font/press_start_2p"
             android:text="High Score"
-            android:textColor="#FF0000" />
+            android:textColor="#FF0000"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/highscorePacman"
@@ -41,8 +43,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="18dp"
+            android:fontFamily="@font/press_start_2p"
             android:hint="0"
             android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@id/highScoreString" />
 
     </LinearLayout>
@@ -52,8 +57,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="3"
+        android:fontFamily="@font/press_start_2p"
         android:hint="0"
         android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="20sp"
         tools:layout_editor_absoluteX="7dp"
         tools:layout_editor_absoluteY="7dp" />
 
@@ -61,47 +69,168 @@
         android:id="@+id/overText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="180dp"
+        android:layout_marginTop="210dp"
         android:fontFamily="@font/press_start_2p"
         android:text="@string/game_over"
         android:textColor="@color/quantum_yellow"
         android:textSize="40sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/tryAgainText"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="24dp"-->
-<!--        android:fontFamily="@font/press_start_2p"-->
-<!--        android:text="@string/restart"-->
-<!--        android:textColor="@color/quantum_yellow"-->
-<!--        android:textSize="20sp"-->
-<!--        android:textStyle="bold"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.075"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <TextView
+        android:id="@+id/wonText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="210dp"
+        android:fontFamily="@font/press_start_2p"
+        android:text="@string/you_won"
+        android:textColor="@color/quantum_yellow"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/tryAgainButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="232dp"
+        android:layout_marginTop="260dp"
+        android:background="@android:color/transparent"
         android:fontFamily="@font/press_start_2p"
         android:text="@string/restart"
         android:textColor="@color/quantum_yellow"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:background="@android:color/transparent"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/playAgainButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="260dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/press_start_2p"
+        android:text="@string/play_again"
+        android:textColor="@color/quantum_yellow"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/blinky"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="256dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/press_start_2p"
+        android:text="@string/blinky"
+        android:textColor="#f50208"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/pinky"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/press_start_2p"
+        android:text="@string/pinky"
+        android:textColor="#fdb5dd"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/blinky" />
+
+    <TextView
+        android:id="@+id/inky"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/press_start_2p"
+        android:text="@string/inky"
+        android:textColor="#29bff2"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pinky" />
+
+    <TextView
+        android:id="@+id/clyde"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/press_start_2p"
+        android:text="@string/clyde"
+        android:textColor="#fcb744"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inky" />
+
+    <ImageView
+        android:id="@+id/blinkyImage"
+        android:layout_width="31dp"
+        android:layout_height="29dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintBottom_toBottomOf="@id/blinky"
+        app:layout_constraintRight_toLeftOf="@id/blinky"
+        app:srcCompat="@drawable/ghost_red" />
+
+    <ImageView
+        android:id="@+id/pinkyImage"
+        android:layout_width="32dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintBottom_toBottomOf="@id/pinky"
+        app:layout_constraintRight_toLeftOf="@id/pinky"
+        app:srcCompat="@drawable/ghost_pink" />
+
+    <ImageView
+        android:id="@+id/inkyImage"
+        android:layout_width="32dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintBottom_toBottomOf="@id/inky"
+        app:layout_constraintRight_toLeftOf="@id/inky"
+        app:srcCompat="@drawable/ghost_blue" />
+
+    <ImageView
+        android:id="@+id/clydeImage"
+        android:layout_width="32dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintBottom_toBottomOf="@id/clyde"
+        app:layout_constraintRight_toLeftOf="@id/clyde"
+        app:srcCompat="@drawable/ghost_orange" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/clyde"
+        app:srcCompat="@drawable/pacman_logo" />
 </androidx.constraintlayout.widget.ConstraintLayout>
