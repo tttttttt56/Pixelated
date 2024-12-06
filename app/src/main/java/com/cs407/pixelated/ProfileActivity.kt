@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +25,10 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
     private lateinit var userPasswdKV: SharedPreferences
     private lateinit var appDB: PixelDatabase
     private lateinit var profileImageButton: ImageButton
+    private lateinit var editFavoriteAchievementOne: ImageButton
+    private lateinit var editFavoriteAchievementTwo: ImageButton
+    private lateinit var editFavoriteAchievementThree: ImageButton
+    private lateinit var achievementDescription: String
     private lateinit var favoriteGameImage: ImageView
     private lateinit var favoriteGameText: TextView
     private lateinit var editFavoriteButton: ImageButton
@@ -80,6 +83,37 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
         var levelProfileTextView = findViewById<TextView>(R.id.levelInProfile)
         levelProfileTextView?.text = getString(R.string.level, level)
 
+        // set profile display achievement
+        editFavoriteAchievementOne = findViewById(R.id.displayAchievementOne)
+        editFavoriteAchievementTwo = findViewById(R.id.displayAchievementTwo)
+        editFavoriteAchievementThree = findViewById(R.id.displayAchievementThree)
+
+        achievementDescription = sharedPref.getString("achievement_description","").toString()
+        // on button hold, display toast message describing the displayed achievement
+        editFavoriteAchievementOne.setOnLongClickListener {
+            Toast.makeText(this, achievementDescription, Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true // Prevent click listener from triggering
+        }
+        editFavoriteAchievementTwo.setOnLongClickListener {
+            Toast.makeText(this, achievementDescription, Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true // Prevent click listener from triggering
+        }
+        editFavoriteAchievementThree.setOnLongClickListener {
+            Toast.makeText(this, achievementDescription, Toast.LENGTH_SHORT).show()
+            return@setOnLongClickListener true // Prevent click listener from triggering
+        }
+
+        // Change display achievements
+        editFavoriteAchievementOne.setOnClickListener {
+            showAchievementPicker(1)
+        }
+        editFavoriteAchievementTwo.setOnClickListener {
+            showAchievementPicker(2)
+        }
+        editFavoriteAchievementThree.setOnClickListener {
+            showAchievementPicker(3)
+        }
+
         // set profile avatar
         profileImageButton = findViewById(R.id.profile_blue)
         profileImageButton.setOnClickListener {
@@ -102,11 +136,78 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
         val selectedAvatar = sharedPref.getInt("selected_avatar", R.drawable.profile_blue)
         val selectedGame = sharedPref.getString("selected_game", "-----")
         val selectedImage = sharedPref.getInt("selected_image", R.drawable.login_text_background)
+        val selectedAchievementOne = sharedPref.getInt("selected_achievement_one", R.drawable.custom_achievement_button_background)
+        val selectedAchievementTwo = sharedPref.getInt("selected_achievement_two", R.drawable.custom_achievement_button_background)
+        val selectedAchievementThree = sharedPref.getInt("selected_achievement_three", R.drawable.custom_achievement_button_background)
 
-        // Set the avatar/game/arcade
+        // Set the avatar/game/arcade/achievements
         profileImageButton.setImageResource(selectedAvatar)
         favoriteGameText.text = getString(R.string.favorite_game, selectedGame)
         favoriteGameImage.setImageResource(selectedImage)
+        editFavoriteAchievementOne.setImageResource(selectedAchievementOne)
+        editFavoriteAchievementTwo.setImageResource(selectedAchievementTwo)
+        editFavoriteAchievementThree.setImageResource(selectedAchievementThree)
+    }
+
+    private fun showAchievementPicker(selection: Int) {
+        // defines the achievements in an array
+        val achievementImages = arrayOf(
+            R.drawable.edit_pencil,
+            R.drawable.golden_ghost,
+        )
+
+        // creates alert dialog to show achievement options
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Choose your Display Achievement: ")
+
+        // sets the items for the dialog and handle the click event
+        builder.setItems(arrayOf("Clear Selection", "Golden Ghost")) { _, which ->
+            val selectedAchievement = achievementImages[which]
+            if (selection == 1) {
+                if (which == 0) {
+                    achievementDescription = "Try selecting an achievement to display!"
+                }
+                if (which == 1) {
+                    achievementDescription = "Golden Ghost: Earned 100 points in Pac-Man"
+                }
+                editFavoriteAchievementOne.setImageResource(selectedAchievement)
+                // save selected achievement in shared preferences
+                with(sharedPref.edit()) {
+                    putInt("selected_achievement_one", selectedAchievement)
+                    putString("achievement_description", achievementDescription)
+                    apply()
+                }
+            }
+            if (selection == 2) {
+                if (which == 0) {
+                    achievementDescription = "Try selecting an achievement to display!"
+                }
+                if (which == 1) {
+                    achievementDescription = "Golden Ghost: Earned 100 points in Pac-Man"
+                }
+                editFavoriteAchievementTwo.setImageResource(selectedAchievement)
+                // save selected achievement in shared preferences
+                with(sharedPref.edit()) {
+                    putInt("selected_achievement_two", selectedAchievement)
+                    apply()
+                }
+            }
+            if (selection == 3) {
+                if (which == 0) {
+                    achievementDescription = "Try selecting an achievement to display!"
+                }
+                if (which == 1) {
+                    achievementDescription = "Golden Ghost: Earned 100 points in Pac-Man"
+                }
+                editFavoriteAchievementThree.setImageResource(selectedAchievement)
+                // save selected achievement in shared preferences
+                with(sharedPref.edit()) {
+                    putInt("selected_achievement_three", selectedAchievement)
+                    apply()
+                }
+            }
+        }
+        builder.show()
     }
 
     private fun showAvatarPickerDialog() {
