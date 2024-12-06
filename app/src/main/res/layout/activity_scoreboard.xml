@@ -13,6 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitXY"
+        android:background="@color/cream"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:text="@string/highscore_title"
+        android:fontFamily="@font/press_start_2p"
         android:textColor="@color/black"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -79,8 +81,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Pac-Man"
+                        android:fontFamily="@font/press_start_2p"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <!-- Underline -->
                     <View
@@ -94,13 +97,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/pacman_high"
+                    android:fontFamily="@font/press_start_2p"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/gold_trophy" />
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/first"
+                    android:scaleType="centerCrop"
+                    android:paddingBottom="5dp"/>
             </LinearLayout>
 
             <!-- Galaga Row -->
@@ -130,8 +136,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Galaga"
+                        android:fontFamily="@font/press_start_2p"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <!-- Underline -->
                     <View
@@ -144,13 +151,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="50,000"
+                    android:fontFamily="@font/press_start_2p"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/silver_trophy" />
+                    android:layout_width="37dp"
+                    android:layout_height="37dp"
+                    android:src="@drawable/second"
+                    android:scaleType="centerCrop"
+                    android:paddingBottom="7dp"
+                    android:paddingLeft="5dp"/>
             </LinearLayout>
 
             <!-- Centipede Row -->
@@ -180,8 +191,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Centipede"
+                        android:fontFamily="@font/press_start_2p"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <!-- Underline -->
                     <View
@@ -194,13 +206,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="20,000"
+                    android:fontFamily="@font/press_start_2p"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/bronze_trophy" />
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/third"
+                    android:scaleType="centerCrop"
+                    android:paddingBottom="5dp"
+                    android:layout_marginRight="-4dp"
+                    android:layout_marginLeft="4dp"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -240,10 +257,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Most Recent Scores"
+                android:text="Most Recent Scores: "
+                android:fontFamily="@font/press_start_2p"
                 android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textSize="15sp"
                 />
 
             <!-- Pac-Man Row -->
@@ -272,8 +289,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Pac-Man"
+                        android:fontFamily="@font/press_start_2p"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <!-- Underline -->
                     <View
@@ -287,8 +305,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/pacman_recent"
+                    android:fontFamily="@font/press_start_2p"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <ImageView
                     android:layout_width="24dp"
@@ -322,8 +341,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Galaga"
+                        android:fontFamily="@font/press_start_2p"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <!-- Underline -->
                     <View
@@ -336,8 +356,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="500,000"
+                    android:fontFamily="@font/press_start_2p"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <ImageView
                     android:layout_width="24dp"
@@ -371,8 +392,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Centipede"
+                        android:fontFamily="@font/press_start_2p"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <!-- Underline -->
                     <View
@@ -385,8 +407,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="300,000"
+                    android:fontFamily="@font/press_start_2p"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <ImageView
                     android:layout_width="24dp"
