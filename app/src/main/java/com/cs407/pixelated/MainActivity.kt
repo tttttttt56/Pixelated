@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
 
     // popup menu anchored to the profile button
     private fun showProfileMenu(view: View) {
+        val userId = intent.getIntExtra("userId", -1)
         val popup = PopupMenu(this, view)
         popup.menuInflater.inflate(R.menu.top_menu, popup.menu)
         popup.setOnMenuItemClickListener { item ->
@@ -90,9 +91,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.profile -> {
                     Log.d("Menu", "Profile item clicked")
                     // handle the profile item action here
-                    val intent = Intent(this,ProfileActivity::class.java)
-                    //Give input if needed
-                    //intent.putExtra("EXTRA_MESSAGE",userInput)
+                    val userIntent = Intent(this,ProfileActivity::class.java)
+                    intent = userIntent
+                    intent.putExtra("userId", userId)
                     //start activity
                     startActivity(intent)
                     true

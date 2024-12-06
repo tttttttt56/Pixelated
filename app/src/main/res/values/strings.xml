@@ -15,10 +15,10 @@
     <string name="welcomeMessage">Welcome to</string>
     <string name="pixelated">Pixelated</string>
     <string name="username_text">Username: %1$s</string>
-    <string name="level">Level: </string>
+    <string name="level">Level: %d</string>
     <string name="insert_photo">Insert Photo Here</string>
-    <string name="favorite_game">Favorite Game: </string>
-    <string name="favorite_arcade">Favorite Arcade: </string>
+    <string name="favorite_game">Favorite Game: %1$s</string>
+    <string name="favorite_arcade">Favorite Arcade: %1$s</string>
     <string name="achievements">Achievements: </string>
     <string name="game_over">GAME OVER</string>
     <string name="restart">Tap to try again</string>
