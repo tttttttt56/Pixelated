@@ -28,7 +28,9 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
     private lateinit var editFavoriteAchievementOne: ImageButton
     private lateinit var editFavoriteAchievementTwo: ImageButton
     private lateinit var editFavoriteAchievementThree: ImageButton
-    private lateinit var achievementDescription: String
+    private lateinit var achievementDescriptionOne: String
+    private lateinit var achievementDescriptionTwo: String
+    private lateinit var achievementDescriptionThree: String
     private lateinit var favoriteGameImage: ImageView
     private lateinit var favoriteGameText: TextView
     private lateinit var editFavoriteButton: ImageButton
@@ -88,18 +90,20 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
         editFavoriteAchievementTwo = findViewById(R.id.displayAchievementTwo)
         editFavoriteAchievementThree = findViewById(R.id.displayAchievementThree)
 
-        achievementDescription = sharedPref.getString("achievement_description","").toString()
+        achievementDescriptionOne = sharedPref.getString("achievement_description_one","").toString()
+        achievementDescriptionTwo = sharedPref.getString("achievement_description_two","").toString()
+        achievementDescriptionThree = sharedPref.getString("achievement_description_three","").toString()
         // on button hold, display toast message describing the displayed achievement
         editFavoriteAchievementOne.setOnLongClickListener {
-            Toast.makeText(this, achievementDescription, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, achievementDescriptionOne, Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true // Prevent click listener from triggering
         }
         editFavoriteAchievementTwo.setOnLongClickListener {
-            Toast.makeText(this, achievementDescription, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, achievementDescriptionTwo, Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true // Prevent click listener from triggering
         }
         editFavoriteAchievementThree.setOnLongClickListener {
-            Toast.makeText(this, achievementDescription, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, achievementDescriptionThree, Toast.LENGTH_SHORT).show()
             return@setOnLongClickListener true // Prevent click listener from triggering
         }
 
@@ -165,44 +169,46 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
             val selectedAchievement = achievementImages[which]
             if (selection == 1) {
                 if (which == 0) {
-                    achievementDescription = "Try selecting an achievement to display!"
+                    achievementDescriptionOne = "Try selecting an achievement to display!"
                 }
                 if (which == 1) {
-                    achievementDescription = "Golden Ghost: Earned 100 points in Pac-Man"
+                    achievementDescriptionOne = "Golden Ghost: Earned 100 points in Pac-Man"
                 }
                 editFavoriteAchievementOne.setImageResource(selectedAchievement)
                 // save selected achievement in shared preferences
                 with(sharedPref.edit()) {
                     putInt("selected_achievement_one", selectedAchievement)
-                    putString("achievement_description", achievementDescription)
+                    putString("achievement_description_one", achievementDescriptionOne)
                     apply()
                 }
             }
             if (selection == 2) {
                 if (which == 0) {
-                    achievementDescription = "Try selecting an achievement to display!"
+                    achievementDescriptionTwo = "Try selecting an achievement to display!"
                 }
                 if (which == 1) {
-                    achievementDescription = "Golden Ghost: Earned 100 points in Pac-Man"
+                    achievementDescriptionTwo = "Golden Ghost: Earned 100 points in Pac-Man"
                 }
                 editFavoriteAchievementTwo.setImageResource(selectedAchievement)
                 // save selected achievement in shared preferences
                 with(sharedPref.edit()) {
                     putInt("selected_achievement_two", selectedAchievement)
+                    putString("achievement_description_two", achievementDescriptionTwo)
                     apply()
                 }
             }
             if (selection == 3) {
                 if (which == 0) {
-                    achievementDescription = "Try selecting an achievement to display!"
+                    achievementDescriptionThree = "Try selecting an achievement to display!"
                 }
                 if (which == 1) {
-                    achievementDescription = "Golden Ghost: Earned 100 points in Pac-Man"
+                    achievementDescriptionThree = "Golden Ghost: Earned 100 points in Pac-Man"
                 }
                 editFavoriteAchievementThree.setImageResource(selectedAchievement)
                 // save selected achievement in shared preferences
                 with(sharedPref.edit()) {
                     putInt("selected_achievement_three", selectedAchievement)
+                    putString("achievement_description_three", achievementDescriptionThree)
                     apply()
                 }
             }
