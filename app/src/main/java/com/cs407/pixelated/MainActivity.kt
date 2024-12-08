@@ -39,14 +39,6 @@ class MainActivity : AppCompatActivity() {
             showProfileMenu(view)
         }
 
-        findViewById<ImageButton>(R.id.galaga).setOnClickListener(){
-            val intent = Intent(this,GalagaActivity::class.java)
-            //Give input if needed
-            //intent.putExtra("EXTRA_MESSAGE",userInput)
-            //start activity
-            startActivity(intent)
-        }
-
         findViewById<ImageButton>(R.id.pacman).setOnClickListener(){
             val userIntent = Intent(this, PacmanActivity::class.java)
             intent = userIntent
@@ -55,15 +47,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        findViewById<ImageButton>(R.id.centipede).setOnClickListener(){
-            val intent = Intent(this,CentipedeActivity::class.java)
-            //Give input if needed
-            //intent.putExtra("EXTRA_MESSAGE",userInput)
-            //start activity
-            startActivity(intent)
-        }
-
-        findViewById<Button>(R.id.arcade_map).setOnClickListener(){
+        findViewById<ImageButton>(R.id.arcade_map).setOnClickListener(){
             val intent = Intent(this,ArcadeMap::class.java)
             //Give input if needed
             //intent.putExtra("EXTRA_MESSAGE",userInput)
@@ -71,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        findViewById<Button>(R.id.scoreboard).setOnClickListener(){
+        findViewById<ImageButton>(R.id.scoreboard).setOnClickListener(){
             val userIntent = Intent(this, Scoreboard::class.java)
             intent = userIntent
             intent.putExtra("userId", userId)

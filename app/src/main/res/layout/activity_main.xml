@@ -9,10 +9,14 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_width="0dp"
+        android:layout_height="190dp"
+        android:layout_marginBottom="265dp"
         android:background="@drawable/custom_appbar"
         android:elevation="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/arcade_map"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextAppearance="@style/CustomToolbarTitle"
         app:titleTextColor="@android:color/white">
@@ -20,7 +24,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout_editor_absoluteX="16dp">
+            tools:layout_editor_absoluteX="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
                 android:id="@+id/toolbar_title"
@@ -28,11 +34,12 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/press_start_2p"
                 android:gravity="center"
-                android:text="@string/app_name"
+                android:layout_marginTop="30dp"
+                android:text="Explore Pixelated Below"
                 android:textAlignment="center"
+                android:lineSpacingExtra="25dp"
                 android:textColor="@color/cream"
                 android:textSize="30sp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.403"
                 app:layout_constraintStart_toStartOf="parent"
@@ -43,11 +50,11 @@
                 android:id="@+id/profile_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:gravity="center"
                 android:scaleX="2"
                 android:scaleY="2"
-                android:gravity="center"
                 android:src="@drawable/profile_vector"
-                android:background="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.944"
@@ -57,93 +64,111 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <LinearLayout
-        android:id="@+id/buttonLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:background="@drawable/app_background"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="36dp">
-
-        <ImageButton
-            android:id="@+id/centipede"
-            android:layout_width="105dp"
-            android:layout_height="105dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="-135dp"
-            android:layout_marginTop="260dp"
-            android:background="@drawable/custom_game_button_background"
-            android:padding="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/centipede_button_img" />
-
-        <ImageButton
-            android:id="@+id/galaga"
-            android:layout_width="105dp"
-            android:layout_height="105dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="-105dp"
-            android:background="@drawable/custom_game_button_background"
-            android:padding="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/galaga_button_img" />
-
-        <ImageButton
-            android:id="@+id/pacman"
-            android:layout_width="105dp"
-            android:layout_height="105dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="130dp"
-            android:layout_marginTop="-105dp"
-            android:background="@drawable/custom_game_button_background"
-            android:scaleType="centerInside"
-            android:src="@drawable/pacman_button_img" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="665dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/arcade_map"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/brown"
-            android:layout_marginStart="10dp"
-            android:background="@drawable/custom_bottom_buttons"
-            android:text="@string/ArcadeMap"
-            android:textSize="15sp"
-            android:paddingTop="10dp"
-            android:fontFamily="@font/press_start_2p"
-            android:textColor="@color/cream"
-            tools:layout_editor_absoluteX="166dp"
-            tools:layout_editor_absoluteY="426dp" />
+    <ImageButton
+        android:id="@+id/pacman"
+        android:layout_width="320dp"
+        android:layout_height="115dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="485dp"
+        android:background="@drawable/custom_game_button_background"
+        android:scaleType="fitStart"
+        android:src="@drawable/pacman_button_img"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.822" />
 
-        <Button
-            android:id="@+id/scoreboard"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/brown"
-            android:background="@drawable/custom_bottom_buttons"
-            android:text="@string/scoreboard"
-            android:textSize="15sp"
-            android:paddingTop="10dp"
-            android:fontFamily="@font/press_start_2p"
-            android:textColor="@color/cream"
-            tools:layout_editor_absoluteX="166dp"
-            tools:layout_editor_absoluteY="426dp" />
+    <TextView
+        android:id="@+id/playPacman"
+        android:layout_width="216dp"
+        android:layout_height="173dp"
+        android:layout_marginBottom="462dp"
+        android:fontFamily="@font/press_start_2p"
+        android:gravity="center"
+        android:lineSpacingExtra="10dp"
+        android:text="Play PACMAN Here!"
+        android:textColor="@color/dark_blue"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/pacman"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="1.0" />
 
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/arcade_map"
+        android:layout_width="320dp"
+        android:layout_height="115dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginBottom="295dp"
+        android:background="@drawable/custom_game_button_background"
+        android:scaleType="fitStart"
+        android:src="@drawable/location_pin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/toMap"
+        android:layout_width="216dp"
+        android:layout_height="173dp"
+        android:fontFamily="@font/press_start_2p"
+        android:gravity="center"
+        android:lineSpacingExtra="10dp"
+        android:text="Arcade Map"
+        android:textColor="@color/dark_blue"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/playPacman"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/playPacman"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.476" />
+
+    <ImageButton
+        android:id="@+id/scoreboard"
+        android:layout_width="320dp"
+        android:layout_height="115dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/custom_game_button_background"
+        android:scaleType="fitStart"
+        android:src="@drawable/star_outline"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.857" />
+
+    <TextView
+        android:id="@+id/toScoreboard"
+        android:layout_width="249dp"
+        android:layout_height="166dp"
+        android:layout_marginEnd="36dp"
+        android:fontFamily="@font/press_start_2p"
+        android:gravity="center"
+        android:lineSpacingExtra="10dp"
+        android:text="Score Tracker"
+        android:textColor="@color/dark_blue"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.895" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -36,9 +36,7 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
     private lateinit var editFavoriteButton: ImageButton
     private var level = 1
 
-    private val sharedPref: SharedPreferences by lazy {
-        getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-    }
+    private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +67,7 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
         // getting username
         appDB = PixelDatabase.getDatabase(this)
         val userId = intent.getIntExtra("userId", -1)
+        val userPreferencesManager = UserPreferencesManager(this)
         CoroutineScope(Dispatchers.Default).launch {
             val username = appDB.userDao().getById(userId.toString()).userName
             val scoreboardId = appDB.userDao().getScoreboardIdByUserId(userId)
@@ -81,6 +80,9 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
                 } // todo add more levels/criteria
             }
         }
+
+        // setting this user's shared preferences
+        sharedPref = userPreferencesManager.getUserSharedPreferences(userId)
 
         var levelProfileTextView = findViewById<TextView>(R.id.levelInProfile)
         levelProfileTextView?.text = getString(R.string.level, level)
@@ -239,6 +241,7 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
             profileImageButton.setImageResource(selectedAvatar)
 
             // save selected avatar in shared preferences
+            // todo save avatar in CORRECT shared prefs
             with(sharedPref.edit()) {
                 putInt("selected_avatar", selectedAvatar)
                 apply()
@@ -293,5 +296,13 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
             }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+}
+
+class UserPreferencesManager(val context: Context) {
+    // Get SharedPreferences for a specific user
+    fun getUserSharedPreferences(userID: Int): SharedPreferences {
+        val prefFileName = "user_prefs_$userID"
+        return context.getSharedPreferences(prefFileName, Context.MODE_PRIVATE)
     }
 }
