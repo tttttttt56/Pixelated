@@ -1,5 +1,6 @@
 package com.cs407.pixelated
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,8 +15,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var appDB: PixelDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -68,6 +74,7 @@ class MainActivity : AppCompatActivity() {
     // popup menu anchored to the profile button
     private fun showProfileMenu(view: View) {
         val userId = intent.getIntExtra("userId", -1)
+        appDB = PixelDatabase.getDatabase(this)
         val popup = PopupMenu(this, view)
         popup.menuInflater.inflate(R.menu.top_menu, popup.menu)
         popup.setOnMenuItemClickListener { item ->
@@ -90,6 +97,32 @@ class MainActivity : AppCompatActivity() {
                     finish()
                     true
                 }
+                R.id.delete -> {
+                    Log.d("Menu", "Logout item clicked")
+                    val intent = Intent(this,LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                    // delete user's information from database
+                    lifecycleScope.launch {
+                        val scoreboardId = appDB.userDao().getScoreboardIdByUserId(userId)
+                        appDB.deleteDao().deleteScoreboard(scoreboardId)
+                        appDB.deleteDao().deleteUserRelations(userId)
+                        // and shared preferences
+                        withContext(Dispatchers.IO) {
+                            val userPasswdKV =
+                                this@MainActivity.getSharedPreferences("com.cs407.pixelated.userPasswdKV", Context.MODE_PRIVATE)
+                            val editor = userPasswdKV.edit()
+                            // get username
+                            val username = appDB.userDao().getById(userId.toString())
+                            editor.remove(username.userName)
+                            editor.apply()
+                        }
+                        appDB.deleteDao().deleteUser(userId)
+                    }
+                    startActivity(intent)
+                    finish()
+                    true
+                }
                 else -> false
             }
         }
@@ -102,6 +135,9 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
             R.id.logout -> {
+                return true
+            }
+            R.id.delete -> {
                 return true
             }
             else -> return super.onOptionsItemSelected(item)

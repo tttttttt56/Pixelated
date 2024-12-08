@@ -30,12 +30,16 @@
     <string name="clyde">POKEY - - - - - "CLYDE"</string>
     <string name="sky_high">Sky high: new high score, %d!</string>
     <string name="level_up">Level up: hello, level %d!</string>
+
+    <string name="first_high">%d</string>
+    <string name="second_high">%d</string>
+    <string name="third_high">%d</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="highScore">"High Score: "</string>
     <string name="profile">Profile</string>
     <string name="logout">Logout</string>
-    <string name="highscore_title">High Scores</string>
+    <string name="highscore_title">High Score</string>
     <string name="galaga_highscore">Galaga:</string>
     <string name="pacman_highscore">Pac-Man:</string>
     <string name="centipede_highscore">Centipede:</string>

@@ -476,6 +476,7 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
     fun handleCollision(ghost: Ghost) {
         // Example action: reset the game or end it
         // You can add any behavior you'd like here (e.g., reduce lives, show game over message, etc.)
+        appDB = PixelDatabase.getDatabase(context)
 
         // Stop the game or handle life decrement
         isRunning = false
@@ -490,6 +491,44 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             // show try again
             var tryAgainButton = tryAgainButton
             tryAgainButton?.visibility = View.VISIBLE
+            // ubdate top high score in database if necessary
+            CoroutineScope(Dispatchers.Default).launch {
+                val scoreboardId = appDB.userDao().getScoreboardIdByUserId(userId!!).toString()
+                appDB.scoreboardDao().updateRecentPacman(scoreboardId, currScore.toString())
+                // gets most recent score not high score
+                var recentScore =
+                    appDB.scoreboardDao().getRecentScoreByScoreboardId(scoreboardId.toInt())
+                if (currScore > recentScore!!) {
+                    recentScore = currScore
+                    appDB.scoreboardDao().updateHighestPacman(scoreboardId, recentScore.toString())
+                }
+                val currentFirstHighest =
+                    appDB.scoreboardDao().getFirstHighestByScoreboardId(scoreboardId.toInt())
+                val currentSecondHighest =
+                    appDB.scoreboardDao().getSecondHighestByScoreboardId(scoreboardId.toInt())
+                val currentThirdHighest =
+                    appDB.scoreboardDao().getThirdHighestByScoreboardId(scoreboardId.toInt())
+                if (recentScore == currentFirstHighest!! || recentScore == currentSecondHighest!!
+                    || recentScore == currentThirdHighest!!
+                ) {
+                    // do nothing?
+                } else if (recentScore > currentFirstHighest) {
+                    // update all scores
+                    appDB.scoreboardDao().updateFirstHighest(scoreboardId, recentScore.toString())
+                    appDB.scoreboardDao()
+                        .updateSecondHighest(scoreboardId, currentFirstHighest.toString())
+                    appDB.scoreboardDao()
+                        .updateThirdHighest(scoreboardId, currentSecondHighest.toString())
+                } else if (recentScore > currentSecondHighest) {
+                    // update 2nd and 3rd scores
+                    appDB.scoreboardDao().updateSecondHighest(scoreboardId, recentScore.toString())
+                    appDB.scoreboardDao()
+                        .updateThirdHighest(scoreboardId, currentSecondHighest.toString())
+                } else if (recentScore > currentThirdHighest) {
+                    // update 3rd score
+                    appDB.scoreboardDao().updateThirdHighest(scoreboardId, recentScore.toString())
+                }
+            }
         }
     }
 
@@ -596,6 +635,7 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
                                 highScore = currScore
                                 appDB.scoreboardDao().updateHighestPacman(scoreboardId, highScore.toString())
                             }
+                            //update all textviews
                             (context as? PacmanActivity)?.runOnUiThread {
                                 highestTextView?.text = highScore.toString()
                             }

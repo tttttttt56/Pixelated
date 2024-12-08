@@ -49,11 +49,10 @@ class Converters {
 data class ScoreboardInfo(
     @PrimaryKey(autoGenerate = true) val scoreboardId: Int = 0,
     val highestPacman: Int,
-    val highestGalaga: Int,
-    val highestCentipede: Int,
     val recentPacman: Int,
-    val recentGalaga: Int,
-    val recentCentipede: Int
+    val firstHighest: Int,
+    val secondHighest: Int,
+    val thirdHighest: Int
 )
 
 @Entity(
@@ -80,7 +79,7 @@ interface UserDao {
     @Query("SELECT * FROM User WHERE userName = :name")
     suspend fun getByName(name: String): User
 
-    @Query("SELECT * FROM user WHERE userId = :id")
+    @Query("SELECT * FROM User WHERE userId = :id")
     suspend fun getById(id: String): User
 
     @Query("SELECT scoreboardId FROM UserRelations WHERE userId = :userId LIMIT 1")
@@ -113,6 +112,24 @@ interface ScoreboardDao {
     @Query("SELECT highestPacman FROM ScoreboardInfo WHERE scoreboardId = :scoreboardId")
     suspend fun getHighscoreByScoreboardId(scoreboardId: Int): Int?
 
+    @Query("UPDATE ScoreboardInfo SET firstHighest = :score WHERE scoreboardId = :id")
+    suspend fun updateFirstHighest(id: String, score: String)
+
+    @Query("SELECT firstHighest FROM ScoreboardInfo WHERE scoreboardId = :scoreboardId")
+    suspend fun getFirstHighestByScoreboardId(scoreboardId: Int): Int?
+
+    @Query("UPDATE ScoreboardInfo SET secondHighest = :score WHERE scoreboardId = :id")
+    suspend fun updateSecondHighest(id: String, score: String)
+
+    @Query("SELECT secondHighest FROM ScoreboardInfo WHERE scoreboardId = :scoreboardId")
+    suspend fun getSecondHighestByScoreboardId(scoreboardId: Int): Int?
+
+    @Query("UPDATE ScoreboardInfo SET thirdHighest = :score WHERE scoreboardId = :id")
+    suspend fun updateThirdHighest(id: String, score: String)
+
+    @Query("SELECT thirdHighest FROM ScoreboardInfo WHERE scoreboardId = :scoreboardId")
+    suspend fun getThirdHighestByScoreboardId(scoreboardId: Int): Int?
+
     @Insert(entity = ScoreboardInfo::class)
     suspend fun insert(score: ScoreboardInfo)
 
@@ -130,11 +147,24 @@ interface ScoreboardDao {
     }
 }
 
-@Database(entities = [User::class, ScoreboardInfo::class, UserRelations::class], version = 2)
+@Dao
+interface DeleteDao {
+    @Query("DELETE FROM User WHERE userId = :userId")
+    suspend fun deleteUser(userId: Int)
+
+    @Query("DELETE FROM ScoreboardInfo WHERE scoreboardId = :scoreboardId")
+    suspend fun deleteScoreboard(scoreboardId: Int)
+
+    @Query("DELETE FROM UserRelations WHERE userId = :userId")
+    suspend fun deleteUserRelations(userId: Int)
+}
+
+@Database(entities = [User::class, ScoreboardInfo::class, UserRelations::class], version = 4)
 @TypeConverters(Converters::class)
 abstract class PixelDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun scoreboardDao(): ScoreboardDao
+    abstract fun deleteDao(): DeleteDao
 
     companion object {
         @Volatile

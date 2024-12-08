@@ -140,7 +140,7 @@ class LoginActivity(
             appDB.userDao().insert(currUser)
             // insert user's scoreboard info (declared, not initialized) into Room database
             val currScoreboardInfo = ScoreboardInfo(0,0,0,
-                0,0,0,0)
+                0,0,0)
             appDB.scoreboardDao().insert(currScoreboardInfo)
             // insert relations
             val updatedUserId = appDB.userDao().getByName(name).userId

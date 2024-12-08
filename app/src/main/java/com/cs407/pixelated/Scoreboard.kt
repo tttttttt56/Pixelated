@@ -36,14 +36,26 @@ class Scoreboard : AppCompatActivity() {
         // update scoreboard (pacman's scores)
         val userId = intent.getIntExtra("userId", 0)
         CoroutineScope(Dispatchers.Default).launch {
+            // get values from database
             val scoreboardId = appDB.userDao().getScoreboardIdByUserId(userId)
             val recentScore = appDB.scoreboardDao().getRecentScoreByScoreboardId(scoreboardId)
             val highScore = appDB.scoreboardDao().getHighscoreByScoreboardId(scoreboardId)
+            val firstHighest = appDB.scoreboardDao().getFirstHighestByScoreboardId(scoreboardId)
+            val secondHighest = appDB.scoreboardDao().getSecondHighestByScoreboardId(scoreboardId)
+            val thirdHighest = appDB.scoreboardDao().getThirdHighestByScoreboardId(scoreboardId)
+            // get text views
             val recentScoreText = findViewById<TextView>(R.id.recentScorePacman)
             val highScoreText = findViewById<TextView>(R.id.highScorePacman)
+            val firstHighestText = findViewById<TextView>(R.id.firstHighest)
+            val secondHighestText = findViewById<TextView>(R.id.secondHighest)
+            val thirdHighestText = findViewById<TextView>(R.id.thirdHighest)
+            // set text views
             withContext(Dispatchers.Main) {
                 recentScoreText.text = getString(R.string.pacman_recent, recentScore)
                 highScoreText.text = getString(R.string.pacman_high, highScore)
+                firstHighestText.text = getString(R.string.first_high, firstHighest)
+                secondHighestText.text = getString(R.string.second_high, secondHighest)
+                thirdHighestText.text = getString(R.string.third_high, thirdHighest)
             }
         }
     }
