@@ -86,9 +86,12 @@ class PacmanActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        appDB = PixelDatabase.getDatabase(this)
         when (item.itemId) {
             android.R.id.home -> {
                 // Handle the back button press, typically finishing the activity
+                // still updating top scores
+                gameView.handleCollision()
                 onBackPressedDispatcher.onBackPressed()  // This finishes the current activity and navigates back
                 return true
             }
@@ -467,13 +470,13 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             // Check if the distance is less than the sum of their radii (collision threshold)
             if (distance < pacMan.radius + ghost.radius) {
                 // Handle collision (e.g., end the game or reduce life)
-                handleCollision(ghost)
+                // TODO handleCollision()
                 break // Stop checking further if a collision has occurred
             }
         }
     }
 
-    fun handleCollision(ghost: Ghost) {
+    fun handleCollision() {
         // Example action: reset the game or end it
         // You can add any behavior you'd like here (e.g., reduce lives, show game over message, etc.)
         appDB = PixelDatabase.getDatabase(context)
@@ -563,8 +566,6 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
         pacMan.x = 550f
         pacMan.y = 665f
         pacMan.isDirectionSet = false
-        currScore = 0
-        scoreTextView?.text = currScore.toString()
 
         var initialX = 100f
         var initialY = 100f
@@ -578,7 +579,6 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             initialY = initialY + 100
         }
 
-        // todo reset pellets
         for (i in mazeMap.indices) {           // Iterating over rows
             for (j in mazeMap[i].indices) {    // Iterating over columns in row i
                 for (pellet in pellets) {
@@ -589,8 +589,15 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             }
         }
 
-        // clear text
         val gameOverText = gameOverTextView
+
+        // reset current score if game lost
+        if (gameOverText?.visibility == VISIBLE) {
+            currScore = 0
+            scoreTextView?.text = currScore.toString()
+        }
+
+        // clear text
         gameOverText?.visibility = View.GONE
         // clear try again
         var tryAgainButton = tryAgainButton
@@ -618,7 +625,6 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             if (distance < pacMan.radius) {
                 if (!pellet.isEaten) {
                     pellet.isEaten = true
-                    //TODO Add points to the score
                     //Use runOnUiThread to update the UI element
                     (context as? PacmanActivity)?.runOnUiThread {
                         // increase current score, set updated score

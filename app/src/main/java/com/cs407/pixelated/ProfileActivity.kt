@@ -75,17 +75,20 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
             var usernameProfileTextView = findViewById<TextView>(R.id.usernameInProfile)
             withContext(Dispatchers.Main) {
                 usernameProfileTextView?.text = getString(R.string.username_text, username)
-                if (highestPacman == 1670) {
+                if (highestPacman!! >= 5010) {
+                    level = 4
+                } else if (highestPacman >= 3340) {
+                    level = 3
+                } else if (highestPacman >= 1670) {
                     level = 2
-                } // todo add more levels/criteria
+                }
+                var levelProfileTextView = findViewById<TextView>(R.id.levelInProfile)
+                levelProfileTextView?.text = getString(R.string.level, level)
             }
         }
 
         // setting this user's shared preferences
         sharedPref = userPreferencesManager.getUserSharedPreferences(userId)
-
-        var levelProfileTextView = findViewById<TextView>(R.id.levelInProfile)
-        levelProfileTextView?.text = getString(R.string.level, level)
 
         // set profile display achievement
         editFavoriteAchievementOne = findViewById(R.id.displayAchievementOne)
@@ -160,6 +163,8 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
         val achievementImages = arrayOf(
             R.drawable.edit_pencil,
             R.drawable.golden_ghost,
+            R.drawable.arrow_up,
+            R.drawable.golden_trophy
         )
 
         // creates alert dialog to show achievement options
@@ -167,7 +172,7 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
         builder.setTitle("Choose your Display Achievement: ")
 
         // sets the items for the dialog and handle the click event
-        builder.setItems(arrayOf("Clear Selection", "Golden Ghost")) { _, which ->
+        builder.setItems(arrayOf("Clear Selection", "Golden Ghost", "Level Up", "Golden Trophy")) { _, which ->
             val selectedAchievement = achievementImages[which]
             if (selection == 1) {
                 if (which == 0) {
@@ -175,6 +180,12 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
                 }
                 if (which == 1) {
                     achievementDescriptionOne = "Golden Ghost: Earned 100 points in Pac-Man"
+                }
+                if(which == 2) {
+                    achievementDescriptionOne = "Level up: You've reached level $level!"
+                }
+                if(which == 3) {
+                    achievementDescriptionOne = "Golden Trophy: Congratulations, you've beat Pac-man!"
                 }
                 editFavoriteAchievementOne.setImageResource(selectedAchievement)
                 // save selected achievement in shared preferences
@@ -191,6 +202,12 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
                 if (which == 1) {
                     achievementDescriptionTwo = "Golden Ghost: Earned 100 points in Pac-Man"
                 }
+                if(which == 2) {
+                    achievementDescriptionTwo = "Level up: You've reached level $level!"
+                }
+                if(which == 3) {
+                    achievementDescriptionTwo = "Golden Trophy: Congratulations, you've beat Pac-man!"
+                }
                 editFavoriteAchievementTwo.setImageResource(selectedAchievement)
                 // save selected achievement in shared preferences
                 with(sharedPref.edit()) {
@@ -205,6 +222,12 @@ class ProfileActivity(private val injectedUserViewModel: UserViewModel? = null) 
                 }
                 if (which == 1) {
                     achievementDescriptionThree = "Golden Ghost: Earned 100 points in Pac-Man"
+                }
+                if(which == 2) {
+                    achievementDescriptionThree = "Level up: You've reached level $level!"
+                }
+                if(which == 3) {
+                    achievementDescriptionThree = "Golden Trophy: Congratulations, you've beat Pac-man!"
                 }
                 editFavoriteAchievementThree.setImageResource(selectedAchievement)
                 // save selected achievement in shared preferences
