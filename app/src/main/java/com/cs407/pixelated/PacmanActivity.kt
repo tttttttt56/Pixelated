@@ -470,7 +470,7 @@ class GameView(context: Context, attrs: AttributeSet?) : SurfaceView(context, at
             // Check if the distance is less than the sum of their radii (collision threshold)
             if (distance < pacMan.radius + ghost.radius) {
                 // Handle collision (e.g., end the game or reduce life)
-                // TODO handleCollision()
+                handleCollision()
                 break // Stop checking further if a collision has occurred
             }
         }
